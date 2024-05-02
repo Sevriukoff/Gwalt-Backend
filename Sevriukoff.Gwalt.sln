@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sevriukoff.Gwalt.WebApi", "Sevriukoff.Gwalt.WebApi\Sevriukoff.Gwalt.WebApi.csproj", "{7F51A213-88D6-4B97-9BE9-D860092ECFBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sevriukoff.Gwalt.Application", "Sevriukoff.Gwalt.Application\Sevriukoff.Gwalt.Application.csproj", "{597D61E7-652D-4C85-B76F-542CC72F08C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sevriukoff.Gwalt.Infrastructure", "Sevriukoff.Gwalt.Infrastructure\Sevriukoff.Gwalt.Infrastructure.csproj", "{59781B7D-9E43-4089-A671-9BD78FB319E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F51A213-88D6-4B97-9BE9-D860092ECFBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F51A213-88D6-4B97-9BE9-D860092ECFBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F51A213-88D6-4B97-9BE9-D860092ECFBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F51A213-88D6-4B97-9BE9-D860092ECFBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{597D61E7-652D-4C85-B76F-542CC72F08C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{597D61E7-652D-4C85-B76F-542CC72F08C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{597D61E7-652D-4C85-B76F-542CC72F08C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{597D61E7-652D-4C85-B76F-542CC72F08C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59781B7D-9E43-4089-A671-9BD78FB319E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59781B7D-9E43-4089-A671-9BD78FB319E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59781B7D-9E43-4089-A671-9BD78FB319E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59781B7D-9E43-4089-A671-9BD78FB319E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

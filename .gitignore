@@ -1,0 +1,24 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/contentModel.xml
+/projectSettingsUpdater.xml
+/modules.xml
+/.idea.Sevriukoff.Gwalt.iml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+/.idea
+
+Sevriukoff.Gwalt.sln.DotSettings.user
+Sevriukoff.Gwalt.WebApi/appsettings.Development.json
