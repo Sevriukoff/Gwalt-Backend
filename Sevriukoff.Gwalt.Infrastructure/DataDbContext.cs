@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Sevriukoff.Gwalt.Infrastructure.Base;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Entities.TypeConfigurations;
 
@@ -13,6 +14,10 @@ public class DataDbContext : DbContext
     public DbSet<Track> Tracks { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Comment> Comments { get; set; }
+
+    public DbSet<Like> Likes { get; set; }
+    public DbSet<Listen> Listens { get; set; }
+    public DbSet<Share> Shares { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,4 +1,6 @@
-﻿namespace Sevriukoff.Gwalt.Infrastructure.Base;
+﻿using Sevriukoff.Gwalt.Infrastructure.Base;
+
+namespace Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
 public interface IRepository<T> where T : BaseEntity
 {

@@ -2,7 +2,7 @@
 
 namespace Sevriukoff.Gwalt.Infrastructure.Entities;
 
-public class Genre : BaseEntity
+public class Share : GenMetric
 {
-    public string Name { get; set; }
+    public string ShareToUrl { get; set; }
 }

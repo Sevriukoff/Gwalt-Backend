@@ -2,7 +2,7 @@
 
 namespace Sevriukoff.Gwalt.Infrastructure.Entities;
 
-public class Genre : BaseEntity
+public class Listen : Metric
 {
-    public string Name { get; set; }
+    public int Quality { get; set; }
 }

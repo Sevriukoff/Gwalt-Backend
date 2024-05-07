@@ -11,9 +11,15 @@ public class Track : BaseEntity
     public int Likes { get; set; }
     public int Shares { get; set; }
     public int Plays { get; set; }
-    
     public int AlbumId { get; set; }
-    public Album Album { get; set; }
+
+    #region NavigationProperties
     
+    public Album Album { get; set; }
     public ICollection<Genre> Genres { get; set; } = new HashSet<Genre>();
+    public ICollection<Like> TotalLikes { get; set; }
+    public ICollection<Listen> TotalListens { get; set; }
+    public ICollection<Share> TotalShares { get; set; }
+
+    #endregion
 }

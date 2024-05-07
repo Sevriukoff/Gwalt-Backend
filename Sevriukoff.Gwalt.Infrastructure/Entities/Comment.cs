@@ -1,14 +1,21 @@
-﻿namespace Sevriukoff.Gwalt.Infrastructure.Entities;
+﻿using Sevriukoff.Gwalt.Infrastructure.Base;
 
-public class Comment
+namespace Sevriukoff.Gwalt.Infrastructure.Entities;
+
+public class Comment : BaseEntity
 {
-    public int Id { get; set; }
-
     public string Text { get; set; }
     public DateTime Date { get; set; }
 
     public int TrackId { get; set; }
-    public Track Track { get; set; }
     public int UserId { get; set; }
+    
+    #region NavigationProperties
+    
+    public Track Track { get; set; }
     public User User { get; set; }
+    public ICollection<Like> TotalLikes { get; set; }
+    public ICollection<Share> TotalShares { get; set; }
+
+    #endregion
 }

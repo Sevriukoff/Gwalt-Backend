@@ -12,6 +12,11 @@ public class User : BaseEntity
     public string BackgroundUrl { get; set; }
     public string ShortDescription { get; set; }
     public string Description { get; set; }
-    
+
+    #region NavigationProperties
+
     public ICollection<Album> Albums { get; set; }
+    public ICollection<Like> TotalLikes { get; set; }
+
+    #endregion
 }
