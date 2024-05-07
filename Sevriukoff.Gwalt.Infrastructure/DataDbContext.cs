@@ -28,5 +28,10 @@ public class DataDbContext : DbContext
         modelBuilder.ApplyConfiguration(new TrackTypeConfiguration());
         modelBuilder.ApplyConfiguration(new GenreTypeConfiguration());
         modelBuilder.ApplyConfiguration(new CommentTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new LikeTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ListenTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ShareTypeConfiguration());
+
+        modelBuilder.Entity<Metric>().UseTphMappingStrategy();
     }
 }
