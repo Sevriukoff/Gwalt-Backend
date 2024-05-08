@@ -5,11 +5,11 @@ namespace Sevriukoff.Gwalt.WebApi.Controllers;
 
 [ApiController]
 [Route("/api/v1/[controller]")]
-public class FileController : ControllerBase
+public class FilesController : ControllerBase
 {
     private readonly IFileService _fileService;
     
-    public FileController(IFileService fileService)
+    public FilesController(IFileService fileService)
     {
         _fileService = fileService;
     }

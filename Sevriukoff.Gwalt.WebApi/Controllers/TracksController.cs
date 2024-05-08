@@ -5,11 +5,11 @@ namespace Sevriukoff.Gwalt.WebApi.Controllers;
 
 [ApiController]
 [Route("/api/v1/[controller]")]
-public class TrackController : ControllerBase
+public class TracksController : ControllerBase
 {
     private readonly ITrackService _trackService;
     
-    public TrackController(ITrackService trackService)
+    public TracksController(ITrackService trackService)
     {
         _trackService = trackService;
     }

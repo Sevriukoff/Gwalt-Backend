@@ -1,4 +1,5 @@
 ﻿using Sevriukoff.Gwalt.Application.Interfaces;
+using Sevriukoff.Gwalt.Application.Specification;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
@@ -12,14 +13,33 @@ public class UserService : IUserService
     {
         _userRepository = userRepository;
     }
-    
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _userRepository.GetAllAsync();
+        return await _userRepository.GetAllAsync(new IncludingSpecification<User>("Albums", "Albums.Tracks", "Albums.Tracks.Genres"));
+    }
+    
+    public async Task<User> GetByIdAsync(int id)
+    {
+        return await _userRepository.GetByIdAsync(id);
     }
 
     public async Task<IEnumerable<User>> GetAllWithStaticsAsync()
     {
         return await _userRepository.GetAllWithStaticsAsync();
+    }
+
+    public async Task<User> AddAsync(User user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<User> UpdateAsync(User user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<User> DeleteAsync(int id)
+    {
+        throw new NotImplementedException();
     }
 }

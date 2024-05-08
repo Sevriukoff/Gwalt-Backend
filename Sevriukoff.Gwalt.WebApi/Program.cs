@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
 using Sevriukoff.Gwalt.Application.Interfaces;
@@ -35,7 +36,12 @@ builder.Services.AddScoped<IAmazonS3, AmazonS3Client>(provider =>
 
 builder.Services.AddScoped<IFileStorage, YandexStorage>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opt =>
+    {
+        opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

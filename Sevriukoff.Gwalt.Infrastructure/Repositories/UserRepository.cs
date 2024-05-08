@@ -14,11 +14,10 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public async Task<IEnumerable<User>> GetAllWithStaticsAsync()
     {
-        var users = await Context.Users
+        var users = Context.Users
             .Include(x => x.Albums)
-                .ThenInclude(x => x.Tracks)
-                    .ThenInclude(x => x.Genres)
-            .ToListAsync();
+            .ThenInclude(x => x.Tracks)
+            .ThenInclude(x => x.Genres);
         
         return users;
     }
