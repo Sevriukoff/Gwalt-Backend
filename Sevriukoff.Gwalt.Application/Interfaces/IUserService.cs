@@ -1,4 +1,5 @@
-﻿using Sevriukoff.Gwalt.Infrastructure.Entities;
+﻿using System.Collections;
+using Sevriukoff.Gwalt.Infrastructure.Entities;
 
 namespace Sevriukoff.Gwalt.Application.Interfaces;
 
