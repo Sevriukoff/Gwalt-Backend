@@ -3,7 +3,7 @@ using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
 namespace Sevriukoff.Gwalt.Infrastructure.Base;
 
-internal class SpecificationEvaluator<TEntity, TId> where TEntity : BaseEntity
+internal class SpecificationEvaluator<TEntity> where TEntity : BaseEntity
 {
     public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> query, ISpecification<TEntity>? specifications)
     {

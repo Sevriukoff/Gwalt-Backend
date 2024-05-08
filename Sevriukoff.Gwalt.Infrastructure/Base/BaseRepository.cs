@@ -12,15 +12,21 @@ public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
         Context = context;
     }
     
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(ISpecification<T>? specification = null)
     {
+        if (specification != null)
+            return await SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification)
+                .ToListAsync();
+        
         return await Context.Set<T>().ToListAsync();
     }
 
     public async Task<T?> GetByIdAsync(int id)
-    {
-        return await Context.Set<T>().FindAsync(id);
-    }
+        => await Context.Set<T>().FindAsync(id);
+
+    public async Task<T?> GetAsync(ISpecification<T> specification)
+        => await SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification)
+            .FirstOrDefaultAsync();
 
     public async Task<int> AddAsync(T entity)
     {
@@ -46,4 +52,8 @@ public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
         Context.Set<T>().Remove(entity);
         return await Context.SaveChangesAsync() > 0;
     }
+
+    public async Task<int> CountAsync(ISpecification<T> specification)
+        => await SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification)
+            .CountAsync();
 }
