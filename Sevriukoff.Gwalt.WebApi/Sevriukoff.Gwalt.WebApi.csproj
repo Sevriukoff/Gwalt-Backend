@@ -19,8 +19,4 @@
       <ProjectReference Include="..\Sevriukoff.Gwalt.Application\Sevriukoff.Gwalt.Application.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="ViewModels\" />
-    </ItemGroup>
-
 </Project>
