@@ -1,4 +1,4 @@
-﻿namespace Sevriukoff.Gwalt.WebApi.ViewModels.UserViewModels;
+﻿namespace Sevriukoff.Gwalt.WebApi.ViewModels;
 
 public class UserViewModel
 {

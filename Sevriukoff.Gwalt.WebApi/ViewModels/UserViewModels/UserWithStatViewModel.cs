@@ -1,9 +1,9 @@
-﻿namespace Sevriukoff.Gwalt.WebApi.ViewModels.UserViewModels;
+﻿namespace Sevriukoff.Gwalt.WebApi.ViewModels;
 
 public class UserWithStatViewModel : UserViewModel
 {
-    public string[] Genres { get; set; }
+    public string[] TotalGenres { get; set; }
     public int TotalTracks { get; set; }
     public int TotalLikes { get; set; }
-    public int TotalPlays { get; set; }
+    public int TotalListens { get; set; }
 }
