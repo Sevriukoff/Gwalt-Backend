@@ -13,6 +13,7 @@ public class Album : BaseEntity
 
     public ICollection<User> Authors { get; set; }
     public ICollection<Track> Tracks { get; set; }
+    
     public ICollection<Like> TotalLikes { get; set; }
     public ICollection<Listen> TotalListens { get; set; }
     public ICollection<Share> TotalShares { get; set; }

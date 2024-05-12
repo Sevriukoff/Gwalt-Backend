@@ -15,9 +15,22 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     public async Task<IEnumerable<User>> GetAllWithStaticsAsync()
     {
         var users = Context.Users
+
             .Include(x => x.Albums)
-            .ThenInclude(x => x.Tracks)
-            .ThenInclude(x => x.Genres);
+                .ThenInclude(x => x.Tracks)
+                    .ThenInclude(x => x.Genres)
+
+            .Include(x => x.Albums)
+                .ThenInclude(x => x.Tracks)
+                    .ThenInclude(x => x.TotalLikes)
+
+            .Include(x => x.Albums)
+                .ThenInclude(x => x.Tracks)
+                    .ThenInclude(x => x.TotalListens)
+
+            .Include(x => x.Albums)
+                .ThenInclude(x => x.Tracks)
+                    .ThenInclude(x => x.TotalShares);
         
         return users;
     }
