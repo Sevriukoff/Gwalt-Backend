@@ -1,11 +1,14 @@
 using System.Text.Json.Serialization;
 using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
+using Sevriukoff.Gwalt.Application;
 using Sevriukoff.Gwalt.Application.Interfaces;
+using Sevriukoff.Gwalt.Application.Mapping;
 using Sevriukoff.Gwalt.Application.Services;
 using Sevriukoff.Gwalt.Infrastructure;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 using Sevriukoff.Gwalt.Infrastructure.Repositories;
+using Sevriukoff.Gwalt.WebApi.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +38,7 @@ builder.Services.AddScoped<IAmazonS3, AmazonS3Client>(provider =>
 });
 
 builder.Services.AddScoped<IFileStorage, YandexStorage>();
+builder.Services.AddAutoMapper(typeof(ApplicationMappingProfile), typeof(PresentationMappingProfile));
 
 builder.Services.AddControllers()
     .AddJsonOptions(opt =>
