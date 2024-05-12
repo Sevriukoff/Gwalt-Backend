@@ -10,16 +10,19 @@ public class ShareTypeConfiguration : IEntityTypeConfiguration<Share>
         builder.HasOne(x => x.Track)
             .WithMany(x => x.TotalShares)
             .HasForeignKey(x => x.TrackId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x => x.Album)
             .WithMany(x => x.TotalShares)
             .HasForeignKey(x => x.AlbumId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x => x.Comment)
             .WithMany(x => x.TotalShares)
             .HasForeignKey(x => x.CommentId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

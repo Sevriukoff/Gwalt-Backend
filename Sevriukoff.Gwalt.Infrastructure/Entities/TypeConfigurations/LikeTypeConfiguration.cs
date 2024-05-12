@@ -10,21 +10,30 @@ public class LikeTypeConfiguration : IEntityTypeConfiguration<Like>
         builder.HasOne(x => x.Track)
             .WithMany(x => x.TotalLikes)
             .HasForeignKey(x => x.TrackId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x => x.Album)
             .WithMany(x => x.TotalLikes)
             .HasForeignKey(x => x.AlbumId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x => x.Comment)
             .WithMany(x => x.TotalLikes)
             .HasForeignKey(x => x.CommentId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasOne(x => x.UserProfile)
+        // builder.HasOne(x => x.UserProfile)
+        //     .WithMany(x => x.TotalLikes)
+        //     .HasForeignKey(x => x.UserProfileId)
+        //     .IsRequired(false)
+        //     .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.LikeBy)
             .WithMany(x => x.TotalLikes)
-            .HasForeignKey(x => x.UserProfileId)
+            .HasForeignKey(x => x.LikeById)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -21,7 +21,7 @@ public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
         return await Context.Set<T>().ToListAsync();
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    public virtual async Task<T?> GetByIdAsync(int id)
         => await Context.Set<T>().FindAsync(id);
 
     public async Task<T?> GetAsync(ISpecification<T> specification)

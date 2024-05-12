@@ -4,7 +4,7 @@ namespace Sevriukoff.Gwalt.Infrastructure.Base;
 
 public abstract class Metric : BaseEntity
 {
-    public int LikeById { get; set; }
+    public int LikeById { get; set; } //TODO: Rename
     public User LikeBy { get; set; }
     
     public int? TrackId { get; set; }

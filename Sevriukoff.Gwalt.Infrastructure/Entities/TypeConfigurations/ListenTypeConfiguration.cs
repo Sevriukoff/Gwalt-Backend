@@ -10,11 +10,13 @@ public class ListenTypeConfiguration : IEntityTypeConfiguration<Listen>
         builder.HasOne(x => x.Track)
             .WithMany(x => x.TotalListens)
             .HasForeignKey(x => x.TrackId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x => x.Album)
             .WithMany(x => x.TotalListens)
             .HasForeignKey(x => x.AlbumId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
