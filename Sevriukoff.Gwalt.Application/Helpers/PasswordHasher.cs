@@ -25,9 +25,14 @@ public class PasswordHasher
             
             var hashedBytes = sha256.ComputeHash(combinedBytes);
 
-            var hashedPassword = Convert.ToBase64String(hashedBytes);
+            var builder = new StringBuilder(128);
 
-            return hashedPassword;
+            foreach (var b in hashedBytes)
+            {
+                builder.Append(b.ToString("X2"));
+            }
+
+            return builder.ToString().ToLower();
         }
     }
     
