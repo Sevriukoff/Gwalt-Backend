@@ -25,6 +25,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITrackRepository, TrackRepository>();
 builder.Services.AddScoped<ITrackService, TrackService>();
 
+builder.Services.AddScoped<PasswordHasher>();
 builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddScoped<IAmazonS3, AmazonS3Client>(provider =>

@@ -7,6 +7,7 @@ public class User : BaseEntity
     public string Name { get; set; }
     public string Email { get; set; }
     public string PasswordHash { get; set; }
+    public string PasswordSalt { get; set; }
     public DateTime RegistrationDate { get; set; }
     public string AvatarUrl { get; set; }
     public string BackgroundUrl { get; set; }

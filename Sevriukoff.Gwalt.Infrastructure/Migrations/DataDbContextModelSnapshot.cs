@@ -78,8 +78,6 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LikeById");
-
                     b.ToTable("Metric");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Metric");
@@ -245,6 +243,10 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
+                    b.Property<string>("PasswordSalt")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -272,6 +274,8 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 
                     b.HasIndex("CommentId");
 
+                    b.HasIndex("LikeById");
+
                     b.HasIndex("TrackId");
 
                     b.HasIndex("UserProfileId");
@@ -287,6 +291,8 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasIndex("AlbumId");
+
+                    b.HasIndex("LikeById");
 
                     b.HasIndex("TrackId");
 
@@ -308,6 +314,8 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                     b.HasIndex("AlbumId");
 
                     b.HasIndex("CommentId");
+
+                    b.HasIndex("LikeById");
 
                     b.HasIndex("TrackId");
 
@@ -342,17 +350,6 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Base.Metric", b =>
-                {
-                    b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "LikeBy")
-                        .WithMany()
-                        .HasForeignKey("LikeById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LikeBy");
                 });
 
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Comment", b =>
@@ -397,19 +394,26 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "LikeBy")
+                        .WithMany("TotalLikes")
+                        .HasForeignKey("LikeById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Track", "Track")
                         .WithMany("TotalLikes")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "UserProfile")
-                        .WithMany("TotalLikes")
-                        .HasForeignKey("UserProfileId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany()
+                        .HasForeignKey("UserProfileId");
 
                     b.Navigation("Album");
 
                     b.Navigation("Comment");
+
+                    b.Navigation("LikeBy");
 
                     b.Navigation("Track");
 
@@ -423,12 +427,20 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasForeignKey("AlbumId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "LikeBy")
+                        .WithMany()
+                        .HasForeignKey("LikeById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Track", "Track")
                         .WithMany("TotalListens")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Album");
+
+                    b.Navigation("LikeBy");
 
                     b.Navigation("Track");
                 });
@@ -445,6 +457,12 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "LikeBy")
+                        .WithMany()
+                        .HasForeignKey("LikeById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Track", "Track")
                         .WithMany("TotalShares")
                         .HasForeignKey("TrackId")
@@ -453,6 +471,8 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                     b.Navigation("Album");
 
                     b.Navigation("Comment");
+
+                    b.Navigation("LikeBy");
 
                     b.Navigation("Track");
                 });

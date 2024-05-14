@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Sevriukoff.Gwalt.Application.Helpers;
 using Sevriukoff.Gwalt.Application.Interfaces;
-using Sevriukoff.Gwalt.Application.Mapping;
 using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.Application.Specification;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
@@ -11,11 +11,13 @@ namespace Sevriukoff.Gwalt.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly PasswordHasher _passwordHasher;
     private readonly IMapper _autoMapper;
     
-    public UserService(IUserRepository userRepository, IMapper mapper)
+    public UserService(IUserRepository userRepository, PasswordHasher passwordHasher, IMapper mapper)
     {
         _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
         _autoMapper = mapper;
     }
     public async Task<IEnumerable<UserModel>> GetAllAsync()
@@ -46,9 +48,23 @@ public class UserService : IUserService
         return userModels;
     }
 
-    public async Task<UserModel> AddAsync(UserModel user)
+    public async Task<int> AddAsync(string name, string email, string password)
     {
-        throw new NotImplementedException();
+        var salt = _passwordHasher.GenerateSalt();
+        var passwordHash = _passwordHasher.HashPassword(password, salt);
+        
+        var userEntity = new User
+        {
+            Name = name,
+            Email = email,
+            PasswordHash = passwordHash,
+            PasswordSalt = salt,
+            RegistrationDate = DateTime.UtcNow
+        };
+
+        var id = await _userRepository.AddAsync(userEntity);
+
+        return id;
     }
 
     public async Task<UserModel> UpdateAsync(UserModel user)
