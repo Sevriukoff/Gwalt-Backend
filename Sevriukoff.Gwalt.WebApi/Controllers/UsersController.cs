@@ -56,9 +56,11 @@ public class UsersController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> Post(User user)
+    public async Task<IActionResult> Post(UserCreateViewModel user)
     {
-        return Ok(await _userService.AddAsync(new UserModel()));
+        var id = await _userService.AddAsync(user.Name, user.Email, user.Password);
+        
+        return Ok(id);
     }
     
     [HttpPut]

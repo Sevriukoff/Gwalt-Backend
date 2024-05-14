@@ -10,7 +10,7 @@ public interface IUserService
     Task<UserModel> GetByIdAsync(int id);
     Task<IEnumerable<UserModel>> GetAllWithStaticsAsync();
     
-    Task<UserModel> AddAsync(UserModel user);
+    Task<int> AddAsync(string name, string email, string password);
     Task<UserModel> UpdateAsync(UserModel user);
     Task<UserModel> DeleteAsync(int id);
 
