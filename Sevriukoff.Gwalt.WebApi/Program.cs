@@ -13,6 +13,7 @@ using Sevriukoff.Gwalt.WebApi.Mapping;
 var builder = WebApplication.CreateBuilder(args);
 
 //TODO: Add Autofac
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtBearerConfig"));
 
 builder.Services.AddDbContext<DataDbContext>(options =>
 {
