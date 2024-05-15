@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Sevriukoff.Gwalt.Application.Models;
 
 namespace Sevriukoff.Gwalt.Application.Helpers;
 
@@ -16,17 +15,15 @@ public class JwtHelper
         _jwtSettings = jwtSettings.Value;
     }
     
-    public (string accessToken, string refreshToken) GenerateTokens(UserModel user)
+    public (string accessToken, string refreshToken) GenerateTokens(int userId)
     {
         var claims = new List<Claim>
         {
-            new (JwtRegisteredClaimNames.Sub,user.Id.ToString()),
-            new (JwtRegisteredClaimNames.Email, user.Email)
+            new (JwtRegisteredClaimNames.Sub,userId.ToString())
         };
         
         var notBefore = DateTime.Now;
         var accessTokenExpires = notBefore.AddSeconds(_jwtSettings.AccessTokenExpiration);
-        var refreshTokenExpires = notBefore.AddSeconds(_jwtSettings.RefreshTokenExpiration);
         
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -40,18 +37,25 @@ public class JwtHelper
             signingCredentials
         );
 
-        var refreshToken = new JwtSecurityToken(
-            _jwtSettings.Issuer,
-            _jwtSettings.Audience,
-            claims,
-            notBefore,
-            refreshTokenExpires,
-            signingCredentials
-        );
-
         var accessTokenString = new JwtSecurityTokenHandler().WriteToken(accessToken);
-        var refreshTokenString = new JwtSecurityTokenHandler().WriteToken(refreshToken);
+        var refreshTokenString = Guid.NewGuid().ToString();
         
         return (accessTokenString, refreshTokenString);
+    }
+    
+    public IEnumerable<Claim> GetClaims(string jwtToken)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var claimsPrincipal = tokenHandler.ReadJwtToken(jwtToken);
+            
+            return claimsPrincipal.Claims;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при декодировании и верификации токена: {ex.Message}");
+            return Enumerable.Empty<Claim>();
+        }
     }
 }

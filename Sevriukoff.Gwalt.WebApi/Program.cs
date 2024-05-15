@@ -36,6 +36,21 @@ builder.Services.AddAuthentication(opt =>
         IssuerSigningKey =
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtBearerConfig:SecretKey"]))
     };
+
+    opt.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            if (context.Request.Cookies.TryGetValue("jwt-access", out var accessToken))
+            {
+                //var jwtHelper = context.HttpContext.RequestServices.GetRequiredService<JwtHelper>();
+                
+                context.Token = accessToken;
+            }
+            
+            return Task.CompletedTask;
+        }
+    };
 });
 
 #endregion
@@ -53,12 +68,18 @@ builder.Services.AddAuthorization(opt =>
 
 builder.Services.AddDbContext<DataDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres"));
 });
 
 #endregion
 
 #region DependencyInjections
+
+builder.Services.AddStackExchangeRedisCache(opt =>
+{
+    opt.Configuration = builder.Configuration.GetConnectionString("Redis");
+    opt.InstanceName = "Gwalt";
+});
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
