@@ -110,10 +110,18 @@ builder.Services.AddAutoMapper(typeof(ApplicationMappingProfile), typeof(Present
 #endregion
 
 builder.Services.AddControllers()
+var provider = builder.Services.BuildServiceProvider();
+
+builder.Services.AddControllers(opt =>
+    {
+        opt.ValueProviderFactories.Add(new JwtValueProviderFactory(provider.GetRequiredService<JwtHelper>()));
+        opt.ValueProviderFactories.Add(new CookieValueProviderFactory());
+    })
     .AddJsonOptions(opt =>
     {
         opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddEndpointsApiExplorer();
