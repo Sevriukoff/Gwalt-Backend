@@ -1,18 +1,26 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using Microsoft.Extensions.Options;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
 namespace Sevriukoff.Gwalt.Infrastructure;
 
+public class YandexStorageConfig
+{
+    public required string ServiceUrl { init; get; }
+    public required string BucketName { init; get; }
+    public required string BaseDirectory { init; get; }
+}
+
 public class YandexStorage : IFileStorage
 {
-    private readonly string _bucketName;
     private readonly IAmazonS3 _storageClient;
+    private YandexStorageConfig _config;
     
-    public YandexStorage(IAmazonS3 storageClient, string bucketName = "id-gwalt-storage")
+    public YandexStorage(IAmazonS3 storageClient, IOptions<YandexStorageConfig> config)
     {
         _storageClient = storageClient;
-        _bucketName = bucketName;
+        _config = config.Value;
     }
 
     public async Task<string> UploadAsync(Stream fileStream, FileContentType contentType)
@@ -22,7 +30,7 @@ public class YandexStorage : IFileStorage
         
         var request = new PutObjectRequest
         {
-            BucketName = _bucketName,
+            BucketName = _config.BucketName,
             Key = string.Concat(filePath, fileName),
             ContentType = contentType.ToString(),
             InputStream = fileStream,
@@ -32,7 +40,7 @@ public class YandexStorage : IFileStorage
         
         if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
         {
-            return fileName;
+            return Path.Combine(_config.BaseDirectory, filePath, fileName);
         }
         
         return string.Empty;

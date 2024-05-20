@@ -16,6 +16,7 @@ using Sevriukoff.Gwalt.WebApi.Mapping;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtBearerConfig"));
+builder.Services.Configure<YandexStorageConfig>(builder.Configuration.GetSection("YandexStorageConfig"));
 
 #region Authentication
 
