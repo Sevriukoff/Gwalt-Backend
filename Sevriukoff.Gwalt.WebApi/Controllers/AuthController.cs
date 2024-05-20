@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Sevriukoff.Gwalt.Application.Exceptions;
+using Sevriukoff.Gwalt.Application.Helpers;
 using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.WebApi.Common;
+using Sevriukoff.Gwalt.WebApi.Common.Attributes;
 using Sevriukoff.Gwalt.WebApi.ViewModels;
 
 namespace Sevriukoff.Gwalt.WebApi.Controllers;
@@ -12,11 +15,13 @@ namespace Sevriukoff.Gwalt.WebApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    
-    
-    public AuthController(IAuthService authService)
+    private readonly JwtConfig _jwtConfig;
+
+
+    public AuthController(IAuthService authService, IOptions<JwtConfig> jwtSettings)
     {
         _authService = authService;
+        _jwtConfig = jwtSettings.Value;
     }
 
     [HttpPost("login")]
@@ -38,18 +43,19 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshToken()
+    public async Task<IActionResult> RefreshToken([FromCookie("jwt-refresh")] string refreshToken)
     {
         try
         {
-            var result = Request.Cookies.TryGetValue("jwt-refresh", out var refreshToken);
-
-            if (!result)
+            if (string.IsNullOrEmpty(refreshToken))
                 return Forbid();
             
             var newTokens = await _authService.RefreshTokenAsync(refreshToken);
+            
+            Response.SetCookie("jwt-access", newTokens.newAccessToken, 3600);
+            Response.SetCookie("jwt-refresh", newTokens.newRefreshToken, 3600);
         
-            return Ok(newTokens);
+            return Ok();
         }
         catch (AuthException e)
         {
@@ -59,7 +65,7 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout(int userId)
+    public async Task<IActionResult> Logout([FromJwtClaims("sub")] int userId)
     {
         await _authService.Logout(userId);
         

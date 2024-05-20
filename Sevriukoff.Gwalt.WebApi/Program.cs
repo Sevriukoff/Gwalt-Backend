@@ -40,6 +40,7 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
 
     containerBuilder.RegisterType<JwtHelper>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<PasswordHasher>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<SessionService>().As<ISessionService>().InstancePerLifetimeScope();
 
     containerBuilder.RegisterType<FileService>().As<IFileService>().InstancePerLifetimeScope();
 
