@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.WebApi.ViewModels;
 
@@ -11,5 +10,10 @@ public class PresentationMappingProfile : Profile
     public PresentationMappingProfile()
     {
         CreateMap<UserModel, UserWithStatViewModel>();
+        
+        CreateMap<UserModel, UserViewModel>();
+        CreateMap<AlbumModel, AlbumViewModel>()
+            .ForMember(x => x.CoverUrl, opt => opt.MapFrom(src => src.ImageUrl));
+        CreateMap<TrackModel, TrackViewModel>();
     }
 }

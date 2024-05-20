@@ -10,4 +10,6 @@ public class UserViewModel
     public string BackgroundUrl { get; set; }
     public string ShortDescription { get; set; }
     public string Description { get; set; }
+
+    public List<AlbumViewModel> Albums { get; set; }
 }

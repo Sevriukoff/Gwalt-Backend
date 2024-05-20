@@ -35,7 +35,7 @@ public class ApplicationMappingProfile : Profile
         CreateMap<Album, AlbumModel>();
 
         CreateMap<Track, TrackModel>()
-                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.DurationInSeconds))
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
                 .ForMember(dest => dest.LikesCount, opt => opt.MapFrom(src => src.TotalLikes.Count));
             
         CreateMap<Genre, GenreModel>();

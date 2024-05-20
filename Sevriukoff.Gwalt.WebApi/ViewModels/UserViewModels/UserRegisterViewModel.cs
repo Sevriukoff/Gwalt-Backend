@@ -1,6 +1,6 @@
 ﻿namespace Sevriukoff.Gwalt.WebApi.ViewModels;
 
-public class UserCreateViewModel
+public class UserRegisterViewModel
 {
     public string Name { get; set; }
     public string Email { get; set; }
