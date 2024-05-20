@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Sevriukoff.Gwalt.Infrastructure.Entities.TypeConfigurations;
 
-public class TrackTypeConfiguration : IEntityTypeConfiguration<Track>
+public class TrackTypeConfig : IEntityTypeConfiguration<Track>
 {
     public void Configure(EntityTypeBuilder<Track> builder)
     {
@@ -14,10 +14,10 @@ public class TrackTypeConfiguration : IEntityTypeConfiguration<Track>
             .IsRequired();
 
         builder.Property(x => x.AudioUrl)
-            .HasMaxLength(255)
+            .HasMaxLength(DataDbContext.UrlMaxLength)
             .IsRequired();
         
-        builder.Property(x => x.DurationInSeconds)
+        builder.Property(x => x.Duration)
             .IsRequired();
         
         builder.Property(x => x.IsExplicit)

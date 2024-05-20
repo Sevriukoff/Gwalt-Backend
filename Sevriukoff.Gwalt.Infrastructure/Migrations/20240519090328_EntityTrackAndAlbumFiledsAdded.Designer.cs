@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Sevriukoff.Gwalt.Infrastructure;
@@ -11,9 +12,11 @@ using Sevriukoff.Gwalt.Infrastructure;
 namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    partial class DataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240519090328_EntityTrackAndAlbumFiledsAdded")]
+    partial class EntityTrackAndAlbumFiledsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,8 +98,8 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasMaxLength(650)
-                        .HasColumnType("character varying(650)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<bool>("IsSingle")
                         .HasColumnType("boolean");
@@ -183,13 +186,6 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("interval");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(650)
@@ -247,11 +243,11 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 
                     b.Property<string>("AudioUrl")
                         .IsRequired()
-                        .HasMaxLength(650)
-                        .HasColumnType("character varying(650)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("interval");
+                    b.Property<int>("DurationInSeconds")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsExplicit")
                         .HasColumnType("boolean");
@@ -486,7 +482,7 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Like", b =>
                 {
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Album", "Album")
-                        .WithMany("Likes")
+                        .WithMany("TotalLikes")
                         .HasForeignKey("AlbumId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -524,7 +520,7 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Listen", b =>
                 {
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Album", "Album")
-                        .WithMany("Listens")
+                        .WithMany("TotalListens")
                         .HasForeignKey("AlbumId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -549,7 +545,7 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Share", b =>
                 {
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Album", "Album")
-                        .WithMany("Shares")
+                        .WithMany("TotalShares")
                         .HasForeignKey("AlbumId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -580,11 +576,11 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Album", b =>
                 {
-                    b.Navigation("Likes");
+                    b.Navigation("TotalLikes");
 
-                    b.Navigation("Listens");
+                    b.Navigation("TotalListens");
 
-                    b.Navigation("Shares");
+                    b.Navigation("TotalShares");
 
                     b.Navigation("Tracks");
                 });

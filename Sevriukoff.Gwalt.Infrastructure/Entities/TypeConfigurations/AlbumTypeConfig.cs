@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Sevriukoff.Gwalt.Infrastructure.Entities.TypeConfigurations;
 
-public class AlbumTypeConfiguration : IEntityTypeConfiguration<Album>
+public class AlbumTypeConfig : IEntityTypeConfiguration<Album>
 {
     public void Configure(EntityTypeBuilder<Album> builder)
     {
         builder.HasKey(x => x.Id);
         
         builder.Property(x => x.ImageUrl)
-            .HasMaxLength(255)
+            .HasMaxLength(DataDbContext.UrlMaxLength)
             .IsRequired();
         
         builder.Property(x => x.Title)

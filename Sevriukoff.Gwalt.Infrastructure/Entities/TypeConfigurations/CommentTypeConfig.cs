@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Sevriukoff.Gwalt.Infrastructure.Entities.TypeConfigurations;
 
-public class GenreTypeConfiguration : IEntityTypeConfiguration<Genre>
+public class CommentTypeConfig : IEntityTypeConfiguration<Comment>
 {
-    public void Configure(EntityTypeBuilder<Genre> builder)
+    public void Configure(EntityTypeBuilder<Comment> builder)
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Name)
-            .HasMaxLength(50)
+        builder.Property(x => x.Text)
+            .HasMaxLength(2048)
             .IsRequired();
     }
 }

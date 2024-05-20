@@ -21,8 +21,14 @@ public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
         return await Context.Set<T>().ToListAsync();
     }
 
-    public virtual async Task<T?> GetByIdAsync(int id)
-        => await Context.Set<T>().FindAsync(id);
+    public virtual async Task<T?> GetByIdAsync(int id, ISpecification<T>? specification = null)
+    {
+        if (specification != null)
+            return await SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification)
+                .SingleAsync(x => x.Id == id);
+        
+        return await Context.Set<T>().FindAsync(id);
+    }
 
     public async Task<T?> GetAsync(ISpecification<T> specification)
         => await SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification)
@@ -36,7 +42,7 @@ public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
         return entity.Id;
     }
 
-    public async Task<bool> UpdateAsync(T entity)
+    public virtual async Task<bool> UpdateAsync(T entity)
     {
         Context.Set<T>().Update(entity);
         return await Context.SaveChangesAsync() > 0;

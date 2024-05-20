@@ -5,12 +5,12 @@ namespace Sevriukoff.Gwalt.Infrastructure.Entities;
 public class Track : BaseEntity
 {
     public string Title { get; set; }
-    public int DurationInSeconds { get; set; }
+    public TimeSpan Duration { get; set; }
     public bool IsExplicit { get; set; }
     public string AudioUrl { get; set; }
-    public int Likes { get; set; }
-    public int Shares { get; set; }
-    public int Plays { get; set; }
+    public int LikeCount { get; set; }
+    public int ShareCount { get; set; }
+    public int PlayCount { get; set; }
     public int AlbumId { get; set; }
 
     #region NavigationProperties

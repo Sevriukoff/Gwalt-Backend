@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Sevriukoff.Gwalt.Infrastructure.Entities.TypeConfigurations;
 
-public class UserTypeConfiguration : IEntityTypeConfiguration<User>
+public class UserTypeConfig : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
@@ -26,11 +26,11 @@ public class UserTypeConfiguration : IEntityTypeConfiguration<User>
             .IsRequired(false);
 
         builder.Property(x => x.AvatarUrl)
-            .HasMaxLength(255)
+            .HasMaxLength(DataDbContext.UrlMaxLength)
             .IsRequired();
         
         builder.Property(x => x.BackgroundUrl)
-            .HasMaxLength(255)
+            .HasMaxLength(DataDbContext.UrlMaxLength)
             .IsRequired();
         
         builder.Property(x => x.ShortDescription)
