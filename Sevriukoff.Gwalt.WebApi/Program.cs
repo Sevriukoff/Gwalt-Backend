@@ -18,7 +18,6 @@ using Sevriukoff.Gwalt.WebApi.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtBearerConfig"));
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBuilder) =>
@@ -32,6 +31,11 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
     containerBuilder.RegisterType<AlbumRepository>().As<IAlbumRepository>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<AlbumService>().As<IAlbumService>().InstancePerLifetimeScope();
     
+    containerBuilder.RegisterType<LikeRepository>().As<ILikeRepository>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<LikeService>().As<ILikeService>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<TrackLikeHandler>().As<ILikeHandler>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<AlbumLikeHandler>().As<ILikeHandler>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<CommentLikeHandler>().As<ILikeHandler>().InstancePerLifetimeScope();
 
     containerBuilder.RegisterType<CommentRepository>().As<ICommentRepository>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<CommentService>().As<ICommentService>().InstancePerLifetimeScope();
@@ -146,6 +150,17 @@ builder.Services.AddControllers(opt =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost3000",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
+});
 
 var app = builder.Build();
 
@@ -155,7 +170,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("AllowLocalhost3000");
 
 app.UseAuthentication();
 app.UseAuthorization();
