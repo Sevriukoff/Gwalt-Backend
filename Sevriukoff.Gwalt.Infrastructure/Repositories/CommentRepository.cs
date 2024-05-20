@@ -4,7 +4,7 @@ using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
 namespace Sevriukoff.Gwalt.Infrastructure.Repositories;
 
-public class TrackRepository : BaseRepository<Track>, ITrackRepository
+public class CommentRepository : BaseRepository<Comment>, ICommentRepository
 {
-    public TrackRepository(DataDbContext context) : base(context) { }
+    public CommentRepository(DataDbContext context) : base(context) { }
 }
