@@ -1,6 +1,6 @@
 ﻿namespace Sevriukoff.Gwalt.Application.Helpers;
 
-public class JwtSettings
+public class JwtConfig
 {
     public required string SecretKey { init; get; }
     public required string Issuer { init; get; }

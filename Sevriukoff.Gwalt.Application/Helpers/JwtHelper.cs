@@ -8,11 +8,11 @@ namespace Sevriukoff.Gwalt.Application.Helpers;
 
 public class JwtHelper
 {
-    private readonly JwtSettings _jwtSettings;
+    private readonly JwtConfig _jwtConfig;
     
-    public JwtHelper(IOptions<JwtSettings> jwtSettings)
+    public JwtHelper(IOptions<JwtConfig> jwtSettings)
     {
-        _jwtSettings = jwtSettings.Value;
+        _jwtConfig = jwtSettings.Value;
     }
     
     public (string accessToken, string refreshToken) GenerateTokens(int userId)
@@ -23,14 +23,14 @@ public class JwtHelper
         };
         
         var notBefore = DateTime.Now;
-        var accessTokenExpires = notBefore.AddSeconds(_jwtSettings.AccessTokenExpiration);
+        var accessTokenExpires = notBefore.AddSeconds(_jwtConfig.AccessTokenExpiration);
         
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.SecretKey));
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var accessToken = new JwtSecurityToken(
-            _jwtSettings.Issuer,
-            _jwtSettings.Audience,
+            _jwtConfig.Issuer,
+            _jwtConfig.Audience,
             claims,
             notBefore,
             accessTokenExpires,
