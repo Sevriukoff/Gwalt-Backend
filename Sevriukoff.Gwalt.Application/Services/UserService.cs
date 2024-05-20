@@ -20,22 +20,22 @@ public class UserService : IUserService
         _passwordHasher = passwordHasher;
         _autoMapper = mapper;
     }
-    public async Task<IEnumerable<UserModel>> GetAllAsync()
+    public async Task<IEnumerable<UserModel>> GetAllAsync(string[]? includes, string? orderBy)
     {
-        var spec = new IncludingSpecification<User>(
-            "Albums",
-            "Albums.Tracks",
-            "Albums.Tracks.Genres",
-            "Albums.Tracks.TotalLikes");
-        var userModels = await _userRepository.GetAllAsync(spec);
+        var includeSpec = new IncludingSpecification<User>(includes);
+        var orderSpec = new SortingSpecification<User>(orderBy);
+        
+        var userModels = await _userRepository.GetAllAsync(includeSpec.And(orderSpec));
         
         return userModels.Select(x => _autoMapper.Map<UserModel>(x));
     }
     
-    public async Task<UserModel> GetByIdAsync(int id)
+    public async Task<UserModel> GetByIdAsync(int id, string[]? includes)
     {
-        var userEntities = await _userRepository.GetByIdAsync(id);
-        var userModel = _autoMapper.Map<UserModel>(userEntities);
+        var includeSpec = new IncludingSpecification<User>(includes);
+        
+        var userEntity = await _userRepository.GetByIdAsync(id, includeSpec);
+        var userModel = _autoMapper.Map<UserModel>(userEntity);
         
         return userModel;
     }

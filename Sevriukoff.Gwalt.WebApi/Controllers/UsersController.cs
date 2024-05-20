@@ -24,6 +24,9 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAll([FromQuery] UserQueryParameters queryParameters)
     {
+        var includes = queryParameters.Includes?.Split(';');
+        var orderBy = queryParameters.OrderBy;
+        
         if (queryParameters.WithStats)
         {
             var userModels = await _userService.GetAllWithStaticsAsync();
@@ -43,20 +46,22 @@ public class UsersController : ControllerBase
             return Ok(userViewModels);
         }
         
-        return Ok(await _userService.GetAllAsync());
+        return Ok(await _userService.GetAllAsync(includes, orderBy));
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(int id, [FromQuery] UserQueryParameters queryParameters)
     {
-        var userModel = await _userService.GetByIdAsync(id);
+        var includes = queryParameters.Includes?.Split(';');
+        
+        var userModel = await _userService.GetByIdAsync(id, includes);
         var userViewModel = _mapper.Map<UserViewModel>(userModel);
         
         return Ok(userViewModel);
     }
     
     [HttpPost]
-    public async Task<IActionResult> Post(UserCreateViewModel user)
+    public async Task<IActionResult> Post(UserRegisterViewModel user)
     {
         var id = await _userService.AddAsync(user.Name, user.Email, user.Password);
         

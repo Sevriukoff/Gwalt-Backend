@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using Sevriukoff.Gwalt.Application.Models;
-using Sevriukoff.Gwalt.Infrastructure.Entities;
+﻿using Sevriukoff.Gwalt.Application.Models;
 
 namespace Sevriukoff.Gwalt.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<IEnumerable<UserModel>> GetAllAsync();
-    Task<UserModel> GetByIdAsync(int id);
+    Task<IEnumerable<UserModel>> GetAllAsync(string[]? includes, string? orderBy);
+    Task<UserModel> GetByIdAsync(int id, string[]? includes);
     Task<IEnumerable<UserModel>> GetAllWithStaticsAsync();
     
     Task<int> AddAsync(string name, string email, string password);
