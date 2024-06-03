@@ -39,6 +39,9 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
 
     containerBuilder.RegisterType<CommentRepository>().As<ICommentRepository>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<CommentService>().As<ICommentService>().InstancePerLifetimeScope();
+    
+    containerBuilder.RegisterType<GenreRepository>().As<IGenreRepository>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<GenreService>().As<IGenreService>().InstancePerLifetimeScope();
 
     containerBuilder.RegisterType<AuthService>().As<IAuthService>().InstancePerLifetimeScope();
 

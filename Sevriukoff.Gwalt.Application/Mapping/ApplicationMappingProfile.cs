@@ -38,6 +38,9 @@ public class ApplicationMappingProfile : Profile
                 .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
                 .ForMember(dest => dest.LikesCount, opt => opt.MapFrom(src => src.TotalLikes.Count));
             
-        CreateMap<Genre, GenreModel>();
+        CreateMap<Genre, GenreModel>()
+            .ReverseMap();
+        
+        #endregion
     }
 }
