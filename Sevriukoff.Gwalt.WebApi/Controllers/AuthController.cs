@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
             Response.SetCookie("jwt-access", accessToken, 3600);
             Response.SetCookie("jwt-refresh", refreshToken, 3600);
             
-            return Ok();
+            return Ok( new {accessToken, refreshToken});
         }
         catch (AuthException e)
         {
