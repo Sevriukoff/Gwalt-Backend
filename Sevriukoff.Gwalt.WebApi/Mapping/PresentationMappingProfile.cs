@@ -14,6 +14,12 @@ public class PresentationMappingProfile : Profile
         CreateMap<UserModel, UserViewModel>();
         CreateMap<AlbumModel, AlbumViewModel>()
             .ForMember(x => x.CoverUrl, opt => opt.MapFrom(src => src.ImageUrl));
+        CreateMap<AlbumModel, AlbumViewModel>();
+        CreateMap<TrackCreateViewModel, TrackModel>()
+            .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => TimeSpan.FromSeconds(src.Duration)))
+            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(x => new GenreModel() {Id = x})))
+            .ForMember(dest => dest.Album, opt => opt.MapFrom(src => new AlbumModel() {Id = src.AlbumId}));
+        CreateMap<GenreModel, GenreViewModel>();
         CreateMap<TrackModel, TrackViewModel>();
     }
 }
