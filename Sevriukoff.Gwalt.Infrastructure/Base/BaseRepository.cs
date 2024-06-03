@@ -34,7 +34,7 @@ public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
         => await SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification)
             .FirstOrDefaultAsync();
 
-    public async Task<int> AddAsync(T entity)
+    public virtual async Task<int> AddAsync(T entity)
     {
         await Context.Set<T>().AddAsync(entity);
         await Context.SaveChangesAsync();
