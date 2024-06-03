@@ -7,5 +7,6 @@ public class AlbumViewModel
     public string CoverUrl { get; set; }
     public bool IsSingle { get; set; }
     public bool IsExplicit { get; set; }
+    public List<UserViewModel> Authors { get; set; }
     public List<TrackViewModel> Tracks { get; set; }
 }
