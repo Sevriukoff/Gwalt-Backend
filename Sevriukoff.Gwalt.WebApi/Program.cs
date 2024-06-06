@@ -6,6 +6,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Sevriukoff.Gwalt.Application.Handlers;
 using Sevriukoff.Gwalt.Application.Helpers;
 using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.Application.Mapping;
@@ -93,7 +94,7 @@ builder.Services.AddAuthentication(opt =>
     {
         OnMessageReceived = context =>
         {
-            if (context.Request.Cookies.TryGetValue("jwt-access", out var accessToken))
+            if (context.Request.Cookies.TryGetValue("access-token", out var accessToken))
             {
                 //var jwtHelper = context.HttpContext.RequestServices.GetRequiredService<JwtHelper>();
                 
@@ -161,7 +162,8 @@ builder.Services.AddCors(options =>
             builder.WithOrigins("http://localhost:3000")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowCredentials();
+                .AllowCredentials()
+                .WithExposedHeaders("Location");
         });
 });
 

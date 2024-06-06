@@ -25,7 +25,13 @@ public class AuthService : IAuthService
         _passwordHasher = passwordHasher;
         _sessionService = sessionService;
     }
-    
+
+    public async Task<bool> CheckEmailExistsAsync(string email)
+    {
+        var user = await _userRepository.GetByEmailAsync(email);
+        return user != null;
+    }
+
     public async Task<(string accessToken, string refreshToken)> LoginAsync(string email, string password)
     {
         var userEntity = await _userRepository.GetByEmailAsync(email);

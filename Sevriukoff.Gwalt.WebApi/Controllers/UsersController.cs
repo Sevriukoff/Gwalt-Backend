@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
+using Sevriukoff.Gwalt.WebApi.Common.Attributes;
 using Sevriukoff.Gwalt.WebApi.QueryParameters;
 using Sevriukoff.Gwalt.WebApi.ViewModels;
 
@@ -50,8 +51,13 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id, [FromQuery] UserQueryParameters queryParameters)
+    public async Task<IActionResult> Get([FromJwtClaims("sub")] int userId, int id, [FromQuery] UserQueryParameters queryParameters)
     {
+        if (userId > 0 && userId == id)
+        {
+            
+        }
+        
         var includes = queryParameters.Includes?.Split(';');
         
         var userModel = await _userService.GetByIdAsync(id, includes);

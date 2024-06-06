@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Sevriukoff.Gwalt.Application.Interfaces;
 
 namespace Sevriukoff.Gwalt.WebApi.Controllers;
@@ -14,12 +15,12 @@ public class FilesController : ControllerBase
         _fileService = fileService;
     }
     
-    [HttpGet]
-    public async Task<IActionResult> Get()
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(string id)
     {
         return Ok();
     }
-
+    
     [HttpPost]
     public async Task<IActionResult> Post()
     {

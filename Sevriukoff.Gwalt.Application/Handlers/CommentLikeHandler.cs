@@ -1,9 +1,11 @@
 ﻿using Sevriukoff.Gwalt.Application.Enums;
+using Sevriukoff.Gwalt.Application.Models;
+using Sevriukoff.Gwalt.Application.Services;
 using Sevriukoff.Gwalt.Application.Specification.Like;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
-namespace Sevriukoff.Gwalt.Application.Services;
+namespace Sevriukoff.Gwalt.Application.Handlers;
 
 public class CommentLikeHandler : LikeHandlerBase
 {
@@ -36,5 +38,10 @@ public class CommentLikeHandler : LikeHandlerBase
         var likeEntity = await _likeRepository.GetAsync(spec);
 
         return likeEntity != null;
+    }
+
+    public override async Task<LikeModel> GetLikeAsync(int likeableId, int userId)
+    {
+        throw new NotImplementedException();
     }
 }

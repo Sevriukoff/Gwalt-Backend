@@ -23,6 +23,28 @@ public class AuthController : ControllerBase
         _authService = authService;
         _jwtConfig = jwtSettings.Value;
     }
+    
+    [HttpPost("check-email")]
+    public async Task<IActionResult> CheckEmail([FromBody] CheckEmailViewModel model)
+    {
+        await Task.Delay(2100);
+        
+        if (string.IsNullOrEmpty(model.Email))
+        {
+            return BadRequest("Email is required.");
+        }
+
+        try
+        {
+            var userExists = await _authService.CheckEmailExistsAsync(model.Email);
+
+            return Ok(new { exists = userExists });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, "Internal server error: " + e.Message);
+        }
+    }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginViewModel user)
@@ -71,4 +93,9 @@ public class AuthController : ControllerBase
         
         return Ok();
     }
+}
+
+public class CheckEmailViewModel
+{
+    public string Email { get; set; }
 }

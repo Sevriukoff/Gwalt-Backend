@@ -24,8 +24,9 @@ public class UserService : IUserService
     {
         var includeSpec = new IncludingSpecification<User>(includes);
         var orderSpec = new SortingSpecification<User>(orderBy);
+        var compositeSpec = includeSpec.And(orderSpec);
         
-        var userModels = await _userRepository.GetAllAsync(includeSpec.And(orderSpec));
+        var userModels = await _userRepository.GetAllAsync(compositeSpec);
         
         return userModels.Select(x => _autoMapper.Map<UserModel>(x));
     }
@@ -59,7 +60,9 @@ public class UserService : IUserService
             Email = email,
             PasswordHash = passwordHash,
             PasswordSalt = salt,
-            RegistrationDate = DateTime.UtcNow
+            RegistrationDate = DateTime.UtcNow,
+            AvatarUrl = "https://storage.yandexcloud.net/id-gwalt-storage/image/AvatarDefault.jpeg",
+            BackgroundUrl = "https://storage.yandexcloud.net/id-gwalt-storage/image/BackgroundDefault.jpeg"
         };
 
         var id = await _userRepository.AddAsync(userEntity);
