@@ -1,9 +1,10 @@
 ﻿using Sevriukoff.Gwalt.Application.Enums;
 using Sevriukoff.Gwalt.Application.Interfaces;
+using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
-namespace Sevriukoff.Gwalt.Application.Services;
+namespace Sevriukoff.Gwalt.Application.Handlers;
 
 public abstract class LikeHandlerBase : ILikeHandler
 {
@@ -19,7 +20,8 @@ public abstract class LikeHandlerBase : ILikeHandler
     protected abstract Task IncrementLikeCountAsync(int likeableId);
     protected abstract Task DecrementLikeCountAsync(int likeableId);
     protected abstract Task<bool> IsExists(Like like);
-    
+    public abstract Task<LikeModel?> GetLikeAsync(int likeableId, int userId);
+
     public async Task<int> AddLikeAsync(int likeableId, int userId)
     {
         var like = CreateLike(likeableId, userId);

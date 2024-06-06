@@ -1,5 +1,6 @@
 ﻿using Sevriukoff.Gwalt.Application.Enums;
 using Sevriukoff.Gwalt.Application.Interfaces;
+using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
@@ -15,7 +16,17 @@ public class LikeService : ILikeService
         _likeRepository = likeRepository;
         _handlers = handlers.ToDictionary(x => x.LikeableType, x => x);
     }
-    
+
+    public async Task<LikeModel?> GetAsync(LikeableType likeableType, int likeableId, int userId)
+    {
+        if (_handlers.TryGetValue(likeableType, out var handler))
+        {
+            return await handler.GetLikeAsync(likeableId, userId);
+        }
+        
+        throw new Exception("Handler not found");
+    }
+
     public async Task<int> AddAsync(LikeableType likeableType, int likeableId, int userId)
     {
         if (_handlers.TryGetValue(likeableType, out var handler))

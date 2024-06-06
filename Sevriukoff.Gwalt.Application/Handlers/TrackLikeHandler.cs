@@ -1,9 +1,10 @@
 ﻿using Sevriukoff.Gwalt.Application.Enums;
+using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.Application.Specification.Like;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
-namespace Sevriukoff.Gwalt.Application.Services;
+namespace Sevriukoff.Gwalt.Application.Handlers;
 
 public class TrackLikeHandler : LikeHandlerBase
 {
@@ -48,5 +49,25 @@ public class TrackLikeHandler : LikeHandlerBase
         var likeEntity = await _likeRepository.GetAsync(spec);
 
         return likeEntity != null;
+    }
+
+    public override async Task<LikeModel?> GetLikeAsync(int likeableId, int userId)
+    {
+        var spec = new LikeOnTrackExistSpecification(userId, likeableId);
+        
+        var like = await _likeRepository.GetAsync(spec);
+
+        if (like == null)
+            return null;
+        
+        return new LikeModel
+        {
+            Id = like.Id,
+            Likeable = new TrackModel
+            {
+                Id = likeableId
+            },
+            ReleaseDate = like.ReleaseDate
+        };
     }
 }
