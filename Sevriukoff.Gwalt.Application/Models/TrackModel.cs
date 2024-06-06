@@ -6,7 +6,7 @@ public class TrackModel : ILikeable, IListenable, IShareable
 {
     public int Id { get; set; }
     public string Title { get; set; }
-    public int Duration { get; set; }
+    public TimeSpan Duration { get; set; }
     public bool IsExplicit { get; set; }
     public string AudioUrl { get; set; }
     public GenreModel[] Genres { get; set; }

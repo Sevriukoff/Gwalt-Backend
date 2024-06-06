@@ -9,6 +9,8 @@ public class ApplicationMappingProfile : Profile
 {
     public ApplicationMappingProfile()
     {
+        #region Mappings Model <=> Entity
+        
         CreateMap<User, UserModel>();
             
         CreateMap<Like, LikeModel>()
@@ -32,11 +34,17 @@ public class ApplicationMappingProfile : Profile
                     )
                 );
             
-        CreateMap<Album, AlbumModel>();
+        CreateMap<Album, AlbumModel>()
+            .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom(src => src.ImageUrl))
+            .ReverseMap();
 
         CreateMap<Track, TrackModel>()
-                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
-                .ForMember(dest => dest.LikesCount, opt => opt.MapFrom(src => src.TotalLikes.Count));
+            .ForMember(dest => dest.LikesCount, opt => opt.MapFrom(src => src.TotalLikes != null ? src.TotalLikes.Count : 0))
+            .ForMember(dest => dest.Album, opt => opt.MapFrom(src => src.Album != null ? src.Album : new Album { Id = src.AlbumId }));
+
+        CreateMap<TrackModel, Track>()
+            .ForMember(dest => dest.AlbumId, opt => opt.MapFrom(src => src.Album.Id))
+            .ForMember(dest => dest.Album, opt => opt.Ignore());
             
         CreateMap<Genre, GenreModel>()
             .ReverseMap();

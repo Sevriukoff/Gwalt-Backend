@@ -1,9 +1,12 @@
-﻿using Sevriukoff.Gwalt.Infrastructure.Entities;
+﻿using Sevriukoff.Gwalt.Application.Models;
+using Sevriukoff.Gwalt.Infrastructure.Entities;
 
 namespace Sevriukoff.Gwalt.Application.Interfaces;
 
 public interface ITrackService
 {
     Task<IEnumerable<Track>> GetAllAsync();
-    Task<Track?> GetByIdAsync(int id);
+    Task<TrackModel?> GetByIdAsync(int id, string[]? includes = null);
+    
+    Task<int> AddAsync(TrackModel track);
 }

@@ -19,6 +19,8 @@ public class PresentationMappingProfile : Profile
             .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(x => new GenreModel() {Id = x})))
             .ForMember(dest => dest.Album, opt => opt.MapFrom(src => new AlbumModel() {Id = src.AlbumId}));
         CreateMap<GenreModel, GenreViewModel>();
-        CreateMap<TrackModel, TrackViewModel>();
+        CreateMap<TrackModel, TrackViewModel>()
+            .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom(src => src.Album.CoverUrl))
+            .ForMember(dest => dest.Authors, opt => opt.MapFrom(src => src.Album.Authors));
     }
 }

@@ -13,6 +13,7 @@ public static class ResponseExtensions
         
         if (expireTime.HasValue)
         {
+            option.HttpOnly = true;
             option.Expires = DateTime.Now.AddSeconds(expireTime.Value);
         }
         

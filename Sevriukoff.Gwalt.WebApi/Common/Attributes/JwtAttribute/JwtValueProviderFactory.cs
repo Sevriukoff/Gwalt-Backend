@@ -15,7 +15,7 @@ public class JwtValueProviderFactory : IValueProviderFactory
     
     public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
     {
-        var result = context.ActionContext.HttpContext.Request.Cookies.TryGetValue("jwt-access", out var token);
+        var result = context.ActionContext.HttpContext.Request.Cookies.TryGetValue("access-token", out var token);
 
         if (result)
         {
