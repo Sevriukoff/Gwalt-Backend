@@ -32,15 +32,15 @@ public class CommentLikeHandler : LikeHandlerBase
     protected override async Task<bool> IsExists(Like like)
     {
         var commentId = like.CommentId.Value;
-        var userId = like.LikeById;
+        var userId = like.UserId;
 
         var spec = new LikeOnCommentSpecification(userId, commentId);
-        var likeEntity = await _likeRepository.GetAsync(spec);
+        var likeEntity = await LikeRepository.GetAsync(spec);
 
         return likeEntity != null;
     }
 
-    public override async Task<LikeModel> GetLikeAsync(int likeableId, int userId)
+    public override async Task<LikeModel> GetLikeAsync(int trackId, int userId)
     {
         throw new NotImplementedException();
     }

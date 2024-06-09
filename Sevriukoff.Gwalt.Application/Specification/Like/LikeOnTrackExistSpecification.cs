@@ -4,6 +4,6 @@ public class LikeOnTrackExistSpecification : Specification<Infrastructure.Entiti
 {
     public LikeOnTrackExistSpecification(int userId, int trackId)
     {
-        SetFilterCondition(l => l.LikeById == userId && l.TrackId == trackId);
+        SetFilterCondition(l => l.UserId == userId && l.TrackId == trackId);
     }
 }

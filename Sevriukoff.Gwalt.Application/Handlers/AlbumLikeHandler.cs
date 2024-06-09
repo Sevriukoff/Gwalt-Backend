@@ -22,7 +22,7 @@ public class AlbumLikeHandler : LikeHandlerBase
         return new Like
         {
             AlbumId = likeableId,
-            LikeById = userId,
+            UserId = userId,
             ReleaseDate = DateTime.UtcNow
         };
     }
@@ -44,15 +44,15 @@ public class AlbumLikeHandler : LikeHandlerBase
     protected override async Task<bool> IsExists(Like like)
     {
         var albumId = like.AlbumId.Value;
-        var userId = like.LikeById;
+        var userId = like.UserId;
 
         var spec = new LikeOnAlbumSpecification(userId, albumId);
-        var likeEntity = await _likeRepository.GetAsync(spec);
+        var likeEntity = await LikeRepository.GetAsync(spec);
 
         return likeEntity != null;
     }
 
-    public override async Task<LikeModel> GetLikeAsync(int likeableId, int userId)
+    public override async Task<LikeModel> GetLikeAsync(int trackId, int userId)
     {
         throw new NotImplementedException();
     }

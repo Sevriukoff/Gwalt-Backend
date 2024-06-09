@@ -9,18 +9,18 @@ namespace Sevriukoff.Gwalt.Application.Handlers;
 public abstract class LikeHandlerBase : ILikeHandler
 {
     public abstract LikeableType LikeableType { get; }
-    protected readonly ILikeRepository _likeRepository;
+    protected readonly ILikeRepository LikeRepository;
 
     protected LikeHandlerBase(ILikeRepository likeRepository)
     {
-        _likeRepository = likeRepository;
+        LikeRepository = likeRepository;
     }
     
     protected abstract Like CreateLike(int likeableId, int userId);
     protected abstract Task IncrementLikeCountAsync(int likeableId);
     protected abstract Task DecrementLikeCountAsync(int likeableId);
     protected abstract Task<bool> IsExists(Like like);
-    public abstract Task<LikeModel?> GetLikeAsync(int likeableId, int userId);
+    public abstract Task<LikeModel?> GetLikeAsync(int trackId, int userId);
 
     public async Task<int> AddLikeAsync(int likeableId, int userId)
     {
@@ -32,7 +32,7 @@ public abstract class LikeHandlerBase : ILikeHandler
             throw new Exception("Like already exists");
         }
         
-        var id = await _likeRepository.AddAsync(like);
+        var id = await LikeRepository.AddAsync(like);
         await IncrementLikeCountAsync(likeableId);
 
         return id;
@@ -41,7 +41,7 @@ public abstract class LikeHandlerBase : ILikeHandler
 
     public async Task DeleteLikeAsync(int likeableId, int likeId)
     {
-        await _likeRepository.DeleteAsync(likeId);
+        await LikeRepository.DeleteAsync(likeId);
         await DecrementLikeCountAsync(likeableId);
     }
 }

@@ -4,6 +4,6 @@ public class LikeOnAlbumSpecification : Specification<Infrastructure.Entities.Li
 {
     public LikeOnAlbumSpecification(int userId, int albumId)
     {
-        SetFilterCondition(l => l.LikeById == userId && l.AlbumId == albumId);
+        SetFilterCondition(l => l.UserId == userId && l.AlbumId == albumId);
     }
 }

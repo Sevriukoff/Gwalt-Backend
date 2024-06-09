@@ -21,7 +21,7 @@ public class TrackLikeHandler : LikeHandlerBase
         return new Like
         {
             TrackId = likeableId,
-            LikeById = userId,
+            UserId = userId,
             ReleaseDate = DateTime.UtcNow
         };
     }
@@ -43,19 +43,18 @@ public class TrackLikeHandler : LikeHandlerBase
     protected override async Task<bool> IsExists(Like like)
     {
         var trackId = like.TrackId.Value;
-        var userId = like.LikeById;
+        var userId = like.UserId;
 
         var spec = new LikeOnTrackExistSpecification(userId, trackId);
-        var likeEntity = await _likeRepository.GetAsync(spec);
+        var likeEntity = await LikeRepository.GetAsync(spec);
 
         return likeEntity != null;
     }
 
-    public override async Task<LikeModel?> GetLikeAsync(int likeableId, int userId)
+    public override async Task<LikeModel?> GetLikeAsync(int trackId, int userId)
     {
-        var spec = new LikeOnTrackExistSpecification(userId, likeableId);
-        
-        var like = await _likeRepository.GetAsync(spec);
+        var spec = new LikeOnTrackExistSpecification(userId, trackId);
+        var like = await LikeRepository.GetAsync(spec);
 
         if (like == null)
             return null;
@@ -65,7 +64,7 @@ public class TrackLikeHandler : LikeHandlerBase
             Id = like.Id,
             Likeable = new TrackModel
             {
-                Id = likeableId
+                Id = trackId
             },
             ReleaseDate = like.ReleaseDate
         };

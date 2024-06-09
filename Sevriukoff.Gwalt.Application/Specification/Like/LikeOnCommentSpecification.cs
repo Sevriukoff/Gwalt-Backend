@@ -4,6 +4,6 @@ public class LikeOnCommentSpecification : Specification<Infrastructure.Entities.
 {
     public LikeOnCommentSpecification(int userId, int commentId)
     {
-        SetFilterCondition(l => l.LikeById == userId && l.CommentId == commentId);
+        SetFilterCondition(l => l.UserId == userId && l.CommentId == commentId);
     }
 }
