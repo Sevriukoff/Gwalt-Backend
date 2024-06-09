@@ -31,9 +31,9 @@ public class LikeTypeConfig : IEntityTypeConfiguration<Like>
         //     .IsRequired(false)
         //     .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.LikeBy)
+        builder.HasOne(x => x.User)
             .WithMany(x => x.TotalLikes)
-            .HasForeignKey(x => x.LikeById)
+            .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

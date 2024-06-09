@@ -18,6 +18,7 @@ public class User : BaseEntity
 
     public ICollection<Album> Albums { get; set; }
     public ICollection<Like> TotalLikes { get; set; }
+    public ICollection<Listen> TotalListens { get; set; }
 
     #endregion
 }

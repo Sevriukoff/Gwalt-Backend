@@ -4,7 +4,7 @@ using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
 namespace Sevriukoff.Gwalt.Infrastructure.Repositories;
 
-public class LikeRepository : BaseRepository<Like>, ILikeRepository
+public class ListenRepository : BaseRepository<Listen>, IListenRepository
 {
-    public LikeRepository(DataDbContext context) : base(context) { }
+    public ListenRepository(DataDbContext context) : base(context) { }
 }

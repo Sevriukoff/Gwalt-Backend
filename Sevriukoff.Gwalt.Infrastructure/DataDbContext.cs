@@ -35,7 +35,5 @@ public class DataDbContext : DbContext
         modelBuilder.ApplyConfiguration(new LikeTypeConfig());
         modelBuilder.ApplyConfiguration(new ListenTypeConfig());
         modelBuilder.ApplyConfiguration(new ShareTypeConfig());
-        
-        modelBuilder.Entity<Metric>().UseTphMappingStrategy();
     }
 }

@@ -9,4 +9,6 @@ public interface ITrackService
     Task<TrackModel?> GetByIdAsync(int id, string[]? includes = null);
     
     Task<int> AddAsync(TrackModel track);
+
+    Task UpdateDatabaseFromCacheAsync();
 }

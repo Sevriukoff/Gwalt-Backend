@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Sevriukoff.Gwalt.Infrastructure;
@@ -11,9 +12,11 @@ using Sevriukoff.Gwalt.Infrastructure;
 namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    partial class DataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240606070543_EntityMetricUpdateInheritance")]
+    partial class EntityMetricUpdateInheritance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,16 +191,7 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeSpan>("ActiveListeningTime")
-                        .HasColumnType("interval");
-
                     b.Property<int?>("AlbumId")
-                        .HasColumnType("integer");
-
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("interval");
-
-                    b.Property<int>("PauseCount")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quality")
@@ -206,23 +200,13 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("SeekCount")
-                        .HasColumnType("integer");
-
                     b.Property<string>("SessionId")
-                        .HasMaxLength(36)
-                        .HasColumnType("character varying(36)");
-
-                    b.Property<TimeSpan>("TotalDuration")
-                        .HasColumnType("interval");
+                        .HasColumnType("text");
 
                     b.Property<int?>("TrackId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Volume")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -534,9 +518,8 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "User")
-                        .WithMany("TotalListens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Album");
 
@@ -646,8 +629,6 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.User", b =>
                 {
                     b.Navigation("TotalLikes");
-
-                    b.Navigation("TotalListens");
                 });
 #pragma warning restore 612, 618
         }

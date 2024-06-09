@@ -2,4 +2,4 @@
 
 namespace Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
-public interface ILikeRepository : IRepository<Like> { }
+public interface IListenRepository : IRepository<Listen> { }
