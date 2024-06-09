@@ -73,6 +73,7 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
     containerBuilder.RegisterType<YandexStorage>().As<IFileStorage>().InstancePerLifetimeScope();
 });
 
+builder.Services.AddHostedService<CacheUpdateBackgroundService>();
 builder.Services.AddScoped<JwtHelper>();
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
@@ -168,7 +169,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalhost3000",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000")
+            builder.WithOrigins("http://localhost:3000", "http://localhost:62295")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()

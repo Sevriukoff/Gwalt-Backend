@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.WebApi.ViewModels;
 
@@ -22,5 +23,22 @@ public class PresentationMappingProfile : Profile
         CreateMap<TrackModel, TrackViewModel>()
             .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom(src => src.Album.CoverUrl))
             .ForMember(dest => dest.Authors, opt => opt.MapFrom(src => src.Album.Authors));
+        
+        CreateMap<ListenCreateViewModel, ListenModel>()
+            .ForMember(dest => dest.Metadata, opt => opt.MapFrom(src => new ListenMetadata
+            {
+                ActiveListeningTime = TimeSpan.FromSeconds(src.ActiveListeningTime),
+                EndTime = TimeSpan.FromSeconds(src.EndTime),
+                TotalDuration = TimeSpan.FromSeconds(src.TotalDuration),
+                SeekCount = src.SeekCount,
+                PauseCount = src.PauseCount,
+                Volume = src.Volume
+            }));
+
+        CreateMap<ListenCreateViewModel, TrackModel>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ListenableId));
+
+        CreateMap<ListenCreateViewModel, AlbumModel>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ListenableId));
     }
 }
