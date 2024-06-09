@@ -16,6 +16,14 @@ public class SessionService : ISessionService
         _redisCache = redisCache;
         _jwtConfig = jwtSettings.Value;
     }
+
+    public async Task AddSession(string sessionId, TimeSpan? expireTime)
+    {
+        await _redisCache.SetStringExAsync(sessionId, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = expireTime
+        });
+    }
     
     public async Task AddTokenAsync(int userId, string token)
     {

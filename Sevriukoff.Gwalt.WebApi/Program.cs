@@ -14,8 +14,10 @@ using Sevriukoff.Gwalt.Application.Services;
 using Sevriukoff.Gwalt.Infrastructure;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 using Sevriukoff.Gwalt.Infrastructure.Repositories;
+using Sevriukoff.Gwalt.WebApi.Common;
 using Sevriukoff.Gwalt.WebApi.Common.Attributes;
 using Sevriukoff.Gwalt.WebApi.Mapping;
+using Sevriukoff.Gwalt.WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +71,7 @@ builder.Services.AddScoped<JwtHelper>();
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 builder.Services.Configure<YandexStorageConfig>(builder.Configuration.GetSection("YandexStorageConfig"));
+builder.Services.Configure<CookieConfig>(builder.Configuration.GetSection("CookieConfig"));
 
 #region Authentication
 
@@ -179,6 +182,8 @@ app.UseCors("AllowLocalhost3000");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UsePublicSessionMiddleware();
 
 app.MapControllers();
 
