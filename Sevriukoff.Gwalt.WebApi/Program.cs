@@ -39,6 +39,12 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
     containerBuilder.RegisterType<TrackLikeHandler>().As<ILikeHandler>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<AlbumLikeHandler>().As<ILikeHandler>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<CommentLikeHandler>().As<ILikeHandler>().InstancePerLifetimeScope();
+    
+    containerBuilder.RegisterType<ListenCacheService>().As<IListenCacheService>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<ListenRepository>().As<IListenRepository>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<ListenService>().As<IListenService>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<TrackListenHandler>().As<IListenHandler>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<AlbumListenHandler>().As<IListenHandler>().InstancePerLifetimeScope();
 
     containerBuilder.RegisterType<CommentRepository>().As<ICommentRepository>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<CommentService>().As<ICommentService>().InstancePerLifetimeScope();
