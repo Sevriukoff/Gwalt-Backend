@@ -16,12 +16,14 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly JwtConfig _jwtConfig;
+    private readonly CookieConfig _cookieConfig;
 
 
-    public AuthController(IAuthService authService, IOptions<JwtConfig> jwtSettings)
+    public AuthController(IAuthService authService, IOptions<JwtConfig> jwtSettings, IOptions<CookieConfig> cookieConfig)
     {
         _authService = authService;
         _jwtConfig = jwtSettings.Value;
+        _cookieConfig = cookieConfig.Value;
     }
     
     [HttpPost("check-email")]
@@ -53,8 +55,8 @@ public class AuthController : ControllerBase
         {
             var (accessToken, refreshToken) = await _authService.LoginAsync(user.Email, user.Password);
             
-            Response.SetCookie("jwt-access", accessToken, 3600);
-            Response.SetCookie("jwt-refresh", refreshToken, 3600);
+            Response.SetCookie(_cookieConfig.AccessToken, accessToken, TimeSpan.FromDays(1));
+            Response.SetCookie(_cookieConfig.RefreshToken, refreshToken, TimeSpan.FromDays(1));
             
             return Ok( new {accessToken, refreshToken});
         }
@@ -74,8 +76,8 @@ public class AuthController : ControllerBase
             
             var newTokens = await _authService.RefreshTokenAsync(refreshToken);
             
-            Response.SetCookie("jwt-access", newTokens.newAccessToken, 3600);
-            Response.SetCookie("jwt-refresh", newTokens.newRefreshToken, 3600);
+            Response.SetCookie(_cookieConfig.AccessToken, newTokens.newAccessToken, TimeSpan.FromDays(1));
+            Response.SetCookie(_cookieConfig.RefreshToken, newTokens.newRefreshToken, TimeSpan.FromDays(1));
         
             return Ok();
         }

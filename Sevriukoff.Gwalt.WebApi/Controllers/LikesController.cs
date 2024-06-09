@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sevriukoff.Gwalt.Application.Enums;
 using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.WebApi.Common.Attributes;
+using Sevriukoff.Gwalt.WebApi.ViewModels;
 
 namespace Sevriukoff.Gwalt.WebApi.Controllers;
 
@@ -56,10 +57,4 @@ public class LikesController : ControllerBase
         
         return Ok();
     }
-}
-
-public class LikeCreateViewModel
-{
-    public LikeableType LikeableType { get; set; }
-    public int LikeableId { get; set; }
 }

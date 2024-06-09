@@ -1,10 +1,11 @@
-﻿using Sevriukoff.Gwalt.Application.Interfaces;
+﻿using Sevriukoff.Gwalt.Application.Enums;
+using Sevriukoff.Gwalt.Application.Interfaces;
+using Sevriukoff.Gwalt.Infrastructure.Entities;
 
 namespace Sevriukoff.Gwalt.Application.Models;
 
-public class UserModel
+public class UserModel : BaseModel
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
     public DateTime RegistrationDate { get; set; }
@@ -39,6 +40,8 @@ public class UserModel
     /// Список всех коментариев которые оставил пользователь
     /// </summary>
     public List<CommentModel> Comments { get; set; }
+    
+    public UserModel(int id) : base(id) { }
 }
 
 public abstract class MetricModel
@@ -49,15 +52,35 @@ public abstract class MetricModel
 
 public class LikeModel : MetricModel
 {
+    public UserModel User { get; set; }
     public ILikeable Likeable { get; set; }
 }
 
 public class ListenModel : MetricModel
 {
+    public UserModel User { get; set; }
+    public string SessionId { get; set; }
     public IListenable Listenable { get; set; }
+    public ListenMetadata Metadata { get; set; }
+    
+    public ListenableType GetListenableType()
+    {
+        return Listenable is TrackModel ? ListenableType.Track : ListenableType.Album;
+    }
+}
+
+public class ListenMetadata
+{
+    public TimeSpan TotalDuration { get; set; }
+    public TimeSpan EndTime  { get; set; }
+    public TimeSpan ActiveListeningTime { get; set; }
+    public int SeekCount { get; set; }
+    public int PauseCount { get; set; }
+    public int Volume { get; set; }
 }
 
 public class ShareModel : MetricModel
 {
+    public UserModel User { get; set; }
     public IShareable Shareable { get; set; }
 }

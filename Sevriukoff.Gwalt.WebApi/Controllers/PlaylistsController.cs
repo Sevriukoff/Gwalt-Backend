@@ -44,10 +44,7 @@ public class PlaylistsController : ControllerBase
             CoverUrl = playlistViewModel.CoverUrl,
             IsPrivate = playlistViewModel.IsPrivate,
             CreatedAt = DateTime.Now,
-            User = new UserModel
-            {
-                Id = userId
-            }
+            User = new UserModel(userId)
         };
         
         var id = await _playlistService.AddAsync(model);

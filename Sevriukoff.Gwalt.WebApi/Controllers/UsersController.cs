@@ -77,7 +77,7 @@ public class UsersController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Put(User user)
     {
-        return Ok(await _userService.UpdateAsync(new UserModel()));
+        return Ok(await _userService.UpdateAsync(new UserModel(user.Id)));
     }
     
     [HttpDelete("{id:int}")]
