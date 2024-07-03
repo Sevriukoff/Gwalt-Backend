@@ -101,4 +101,52 @@ public class UserRepository : BaseRepository<User>, IUserRepository
             .ToListAsync();
     }
 
+    public async Task<bool> IsUserFollowingAsync(int userId, int followerId)
+    {
+        return await Context.UserFollowers
+            .AnyAsync(x => x.UserId == userId && x.FollowerId == followerId);
+    }
+
+    public async Task<UserFollower?> GetFollowAsync(int userId, int followerId)
+    {
+        return await Context.UserFollowers
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.FollowerId == followerId);
+    }
+
+    public async Task<int> AddFollowAsync(int userId, int followerId)
+    {
+        var userFollower = new UserFollower
+        {
+            UserId = userId,
+            FollowerId = followerId,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        await Context.UserFollowers.AddAsync(userFollower);
+        await Context.SaveChangesAsync();
+        
+        return userFollower.UserId;
+    }
+    
+    public async Task<bool> DeleteFollowAsync(int userId, int followerId)
+    {
+        var userFollower = await Context.UserFollowers
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.FollowerId == followerId);
+        
+        if (userFollower == null)
+            return false;
+        
+        Context.UserFollowers.Remove(userFollower);
+        
+        return await Context.SaveChangesAsync() > 0;
+    }
+    public async Task IncrementFollowersAsync(int userId, int increment)
+    {
+        await IncrementFieldAsync("FollowersCount", userId, increment);
+    }
+    
+    public async Task IncrementFollowingsAsync(int userId, int increment)
+    {
+        await IncrementFieldAsync("FollowingCount", userId, increment);
+    }
 }

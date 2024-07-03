@@ -54,6 +54,8 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
     containerBuilder.RegisterType<GenreService>().As<IGenreService>().InstancePerLifetimeScope();
 
     containerBuilder.RegisterType<AuthService>().As<IAuthService>().InstancePerLifetimeScope();
+    
+    containerBuilder.RegisterType<SearchService>().As<ISearchService>().InstancePerLifetimeScope();
 
     containerBuilder.RegisterType<JwtHelper>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<PasswordHasher>().InstancePerLifetimeScope();
@@ -80,6 +82,7 @@ builder.Services.AddScoped<JwtHelper>();
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 builder.Services.Configure<YandexStorageConfig>(builder.Configuration.GetSection("YandexStorageConfig"));
 builder.Services.Configure<CookieConfig>(builder.Configuration.GetSection("CookieConfig"));
+builder.Services.Configure<RedisConfig>(builder.Configuration.GetSection("RedisConfig"));
 
 #region Authentication
 
@@ -148,6 +151,19 @@ builder.Services.AddStackExchangeRedisCache(opt =>
 {
     opt.Configuration = builder.Configuration.GetConnectionString("Redis");
     opt.InstanceName = "Gwalt";
+});
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")));
+builder.Services.AddScoped<ICacheProvider>(provider => 
+{
+    var redisConnection = provider.GetRequiredService<IConnectionMultiplexer>();
+    return new RedisCacheProvider(redisConnection);
+});
+
+builder.Services.AddScoped<ICacheKeyManager>(_ => 
+{
+    var instanceName = "Gwalt";
+    return new RedisCacheKeyManager(instanceName);
 });
 
 builder.Services.AddAutoMapper(typeof(ApplicationMappingProfile), typeof(PresentationMappingProfile));

@@ -75,9 +75,48 @@ public class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public async Task<UserModel> DeleteAsync(int id)
+    public async Task<int> FollowAsync(int userId, int followerId)
     {
-        throw new NotImplementedException();
+        if (userId == followerId)
+            return 0;
+        
+        var followIsExist = await _userRepository.IsUserFollowingAsync(userId, followerId);
+
+        if (followIsExist)
+            return 0;
+
+        var id = await _userRepository.AddFollowAsync(userId, followerId);
+        
+        await _followerCacheClient.IncrementFollowersAsync(userId, followerId);
+        
+        return id;
+    }
+    
+    public async Task<bool> UnfollowAsync(int userId, int followerId)
+    {
+        if (userId == followerId)
+            return false;
+        
+        var followIsExist = await _userRepository.IsUserFollowingAsync(userId, followerId);
+
+        if (!followIsExist)
+            return false;
+
+        var result = await _userRepository.DeleteFollowAsync(userId, followerId);
+        
+        await _followerCacheClient.DecrementFollowersAsync(userId, followerId);
+        
+        return result;
+    }
+
+    public async Task<DateTime> GetFollowAsync(int userId, int followerId)
+    {
+        var userFollower = await _userRepository.GetFollowAsync(userId, followerId);
+        
+        if (userFollower == null)
+            return DateTime.MinValue;
+        
+        return userFollower.CreatedAt;
     }
 
     public int GetTotalMetricsByTracks(UserModel user, Func<TrackModel, int> metricSelector)
@@ -94,7 +133,7 @@ public class UserService : IUserService
         return totalMetric;
     }
 
-    public int GetTracksCount(UserModel user)
+    public int GetTracksCount(UserModel? user)
     {
         return user.Albums.Sum(x => x.Tracks.Count);
     }

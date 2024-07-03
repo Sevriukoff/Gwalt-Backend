@@ -13,6 +13,7 @@ public class DataDbContext : DbContext
     public const int UrlMaxLength = 650;
     
     public DbSet<User> Users { get; set; }
+    public DbSet<UserFollower> UserFollowers { get; set; }
     public DbSet<Album> Albums { get; set; }
     public DbSet<Playlist> Playlists { get; set; }
     public DbSet<Track> Tracks { get; set; }
@@ -31,6 +32,7 @@ public class DataDbContext : DbContext
         modelBuilder.HasPostgresEnum<Gender>("public");
 
         modelBuilder.ApplyConfiguration(new UserTypeConfig());
+        modelBuilder.ApplyConfiguration(new UserFollowerTypeConfig());
         modelBuilder.ApplyConfiguration(new AlbumTypeConfig());
         modelBuilder.ApplyConfiguration(new PlaylistTypeConfig());
         modelBuilder.ApplyConfiguration(new TrackTypeConfig());
