@@ -1,8 +1,9 @@
-﻿using Sevriukoff.Gwalt.Application.Enums;
-using Sevriukoff.Gwalt.Application.Helpers;
+﻿using AutoMapper;
+using Sevriukoff.Gwalt.Application.Enums;
 using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.Application.Specification;
 using Sevriukoff.Gwalt.Application.Specification.Listen;
+using Sevriukoff.Gwalt.Infrastructure.Caching;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
@@ -11,16 +12,16 @@ namespace Sevriukoff.Gwalt.Application.Handlers;
 public class TrackListenHandler : ListenHandlerBase
 {
     public override ListenableType ListenableType => ListenableType.Track;
-    private readonly ITrackRepository _trackRepository;
-    private readonly IAlbumRepository _albumRepository;
-    private readonly IListenCacheService _listenCacheService;
     
-    public TrackListenHandler(IListenRepository listenRepository, ITrackRepository trackRepository,
-        IAlbumRepository albumRepository, IListenCacheService listenCacheService) : base(listenRepository)
+    private readonly ListenCacheClient _listenCacheClient;
+    private readonly ITrackRepository _trackRepository;
+    private readonly IMapper _mapper;
+
+    public TrackListenHandler(IListenRepository listenRepository, ListenCacheClient listenCacheClient, IMapper mapper, ITrackRepository trackRepository) : base(listenRepository)
     {
+        _listenCacheClient = listenCacheClient;
         _trackRepository = trackRepository;
-        _albumRepository = albumRepository;
-        _listenCacheService = listenCacheService;
+        _mapper = mapper;
     }
     
     protected override int EvaluateQuality(ListenMetadata metadata, UserModel userModel)
@@ -39,7 +40,7 @@ public class TrackListenHandler : ListenHandlerBase
 
         if (userModel.Id > 0)
         {
-            score += 50;
+            score += 150;
         }
 
         score = Math.Max(0, Math.Min(score, 1000));
@@ -72,16 +73,15 @@ public class TrackListenHandler : ListenHandlerBase
 
     protected override async Task IncrementListenCountAsync(int trackId)
     {
-        var track = await _trackRepository.GetByIdAsync(trackId);
-        var album = await _albumRepository.GetByIdAsync(track.AlbumId);
+        var (albumId, authorsIds) = await _trackRepository.GetAuthorsIdsByTrackIdAsync(trackId);
         
-        await _listenCacheService.IncrementTrackPlayCountAsync(trackId);
-        await _listenCacheService.IncrementAlbumPlayCountAsync(track.AlbumId);
+        await _listenCacheClient.IncrementTrackListensAsync(trackId);
+        await _listenCacheClient.IncrementAlbumListensAsync(albumId);
         
-        track.PlayCount++;
-        album.PlayCount++;
-        
-        await _albumRepository.UpdateAsync(album);
+        foreach (var authorId in authorsIds)
+        {
+            await _listenCacheClient.IncrementUserListensAsync(authorId);
+        }
     }
 
     public override async Task<ListenModel?> GetListenAsync(int trackId, int userId)
@@ -101,5 +101,47 @@ public class TrackListenHandler : ListenHandlerBase
             },
             ReleaseDate = listen.ReleaseDate
         };
+    }
+
+    public override async Task<IEnumerable<ListenModel>> GetListensByUserIdAsync(int userId, string[]? includes, int pageNumber, int pageSize)
+    {
+        var spec = new ListensByUserSpecification(userId);
+        var includeSpec = new IncludingSpecification<Listen>(includes);
+        var listens = await ListenRepository.GetAllAsync(pageNumber, pageSize, specification:spec.And(includeSpec));
+        
+        var listenModels = listens.Select(x => new ListenModel
+        {
+            Id = x.Id,
+            Listenable = x.Track != null ? _mapper.Map<TrackModel>(x.Track) : new TrackModel {Id = x.TrackId!.Value},
+            ReleaseDate = x.ReleaseDate
+        });
+        
+        return listenModels;
+    }
+
+    public override async Task<IEnumerable<ListenModel>> GetListensBySessionIdAsync(string sessionId, string[]? includes, int pageNumber, int pageSize)
+    {
+        var spec = new ListensBySessionIdSpecification(sessionId);
+        var includeSpec = new IncludingSpecification<Listen>(includes);
+        var listens = await ListenRepository.GetAllAsync(pageNumber, pageSize, specification:spec.And(includeSpec));
+        
+        var listenModels = listens.Select(x => new ListenModel
+        {
+            Id = x.Id,
+            Listenable = x.Track != null ? _mapper.Map<TrackModel>(x.Track) : new TrackModel {Id = x.TrackId!.Value},
+            ReleaseDate = x.ReleaseDate,
+            Metadata = new ListenMetadata
+            {
+                Quality = x.Quality,
+                ActiveListeningTime = x.ActiveListeningTime,
+                EndTime = x.EndTime,
+                TotalDuration = x.TotalDuration,
+                SeekCount = x.SeekCount,
+                PauseCount = x.PauseCount,
+                Volume = x.Volume
+            }
+        });
+        
+        return listenModels;
     }
 }

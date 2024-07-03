@@ -26,6 +26,26 @@ public class ListenService : IListenService
         throw new Exception("Handler not found");
     }
     
+    public async Task<IEnumerable<ListenModel>> GetListensByUserIdAsync(ListenableType listenableType, int userId, string[]? includes, int pageNumber, int pageSize)
+    {
+        if (_handlers.TryGetValue(listenableType, out var handler))
+        {
+            return await handler.GetListensByUserIdAsync(userId, includes, pageNumber, pageSize);
+        }
+        
+        throw new Exception("Handler not found");
+    }
+    
+    public async Task<IEnumerable<ListenModel>> GetListensBySessionIdAsync(ListenableType listenableType, string sessionId, string[]? includes, int pageNumber, int pageSize)
+    {
+        if (_handlers.TryGetValue(listenableType, out var handler))
+        {
+            return await handler.GetListensBySessionIdAsync(sessionId, includes, pageNumber, pageSize);
+        }
+        
+        throw new Exception("Handler not found");
+    }
+    
     public async Task<int> AddAsync(ListenModel listen)
     {
         if (_handlers.TryGetValue(listen.GetListenableType(), out var handler))

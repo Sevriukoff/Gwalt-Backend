@@ -20,9 +20,10 @@ public abstract class LikeHandlerBase : ILikeHandler
     protected abstract Task IncrementLikeCountAsync(int likeableId);
     protected abstract Task DecrementLikeCountAsync(int likeableId);
     protected abstract Task<bool> IsExists(Like like);
-    public abstract Task<LikeModel?> GetLikeAsync(int trackId, int userId);
+    public abstract Task<LikeModel?> GetAsync(int trackId, int userId);
+    public abstract Task<IEnumerable<LikeModel>> GetAllByUserIdAsync(int userId, int pageNumber = 1, int pageSize = 10);
 
-    public async Task<int> AddLikeAsync(int likeableId, int userId)
+    public async Task<int> AddAsync(int likeableId, int userId)
     {
         var like = CreateLike(likeableId, userId);
         var likeIsExists = await IsExists(like);
@@ -39,7 +40,7 @@ public abstract class LikeHandlerBase : ILikeHandler
     }
 
 
-    public async Task DeleteLikeAsync(int likeableId, int likeId)
+    public async Task DeleteAsync(int likeableId, int likeId)
     {
         await LikeRepository.DeleteAsync(likeId);
         await DecrementLikeCountAsync(likeableId);

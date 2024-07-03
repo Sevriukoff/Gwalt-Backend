@@ -21,7 +21,17 @@ public class LikeService : ILikeService
     {
         if (_handlers.TryGetValue(likeableType, out var handler))
         {
-            return await handler.GetLikeAsync(likeableId, userId);
+            return await handler.GetAsync(likeableId, userId);
+        }
+        
+        throw new Exception("Handler not found");
+    }
+
+    public async Task<IEnumerable<LikeModel>> GetAllByUserIdAsync(int userId, LikeableType type, int pageNumber = 1, int pageSize = 10)
+    {
+        if (_handlers.TryGetValue(type, out var handler))
+        {
+            return await handler.GetAllByUserIdAsync(userId, pageNumber, pageSize);
         }
         
         throw new Exception("Handler not found");
@@ -31,7 +41,7 @@ public class LikeService : ILikeService
     {
         if (_handlers.TryGetValue(likeableType, out var handler))
         {
-            return await handler.AddLikeAsync(likeableId, userId);
+            return await handler.AddAsync(likeableId, userId);
         }
         
         throw new Exception("Handler not found");
@@ -44,7 +54,7 @@ public class LikeService : ILikeService
         
         if (_handlers.TryGetValue(likeableType, out var handler))
         {
-            await handler.DeleteLikeAsync(likeableId, likeId);
+            await handler.DeleteAsync(likeableId, likeId);
         }
     }
 

@@ -34,14 +34,30 @@ public class CommentLikeHandler : LikeHandlerBase
         var commentId = like.CommentId.Value;
         var userId = like.UserId;
 
-        var spec = new LikeOnCommentSpecification(userId, commentId);
+        var spec = new LikeByUserAndCommentSpecification(userId, commentId);
         var likeEntity = await LikeRepository.GetAsync(spec);
 
         return likeEntity != null;
     }
 
-    public override async Task<LikeModel> GetLikeAsync(int trackId, int userId)
+    public override async Task<LikeModel?> GetAsync(int trackId, int userId)
     {
         throw new NotImplementedException();
+    }
+
+    public override async Task<IEnumerable<LikeModel>> GetAllByUserIdAsync(int userId, int pageNumber = 1, int pageSize = 10)
+    {
+        var spec = new LikesByUserOnCommentsSpecification(userId);
+        var likes = await LikeRepository.GetAllAsync(pageNumber, pageSize, spec);
+        
+        return likes.Select(x => new LikeModel
+        {
+            Id = x.Id,
+            Likeable = new TrackModel
+            {
+                Id = x.CommentId!.Value
+            },
+            ReleaseDate = x.ReleaseDate
+        });
     }
 }

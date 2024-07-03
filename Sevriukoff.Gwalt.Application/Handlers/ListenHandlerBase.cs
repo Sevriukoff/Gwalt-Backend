@@ -20,6 +20,9 @@ public abstract class ListenHandlerBase : IListenHandler
     protected abstract int EvaluateQuality(ListenMetadata metadata, UserModel userModel);
     protected abstract Task IncrementListenCountAsync(int trackId);
     public abstract Task<ListenModel?> GetListenAsync(int trackId, int userId);
+    public abstract Task<IEnumerable<ListenModel>> GetListensByUserIdAsync(int userId, string[]? includes, int pageNumber, int pageSize);
+
+    public abstract Task<IEnumerable<ListenModel>> GetListensBySessionIdAsync(string sessionId, string[]? includes, int pageNumber, int pageSize);
 
     public async Task<int> AddListenAsync(ListenModel listenModel)
     {

@@ -33,4 +33,14 @@ public class AlbumListenHandler : ListenHandlerBase
     {
         throw new NotImplementedException();
     }
+
+    public override async Task<IEnumerable<ListenModel>> GetListensByUserIdAsync(int userId, string[]? includes, int pageNumber, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override async Task<IEnumerable<ListenModel>> GetListensBySessionIdAsync(string sessionId, string[]? includes, int pageNumber, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 }
