@@ -13,12 +13,17 @@ using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.Application.Mapping;
 using Sevriukoff.Gwalt.Application.Services;
 using Sevriukoff.Gwalt.Infrastructure;
+using Sevriukoff.Gwalt.Infrastructure.Base;
+using Sevriukoff.Gwalt.Infrastructure.Caching;
+using Sevriukoff.Gwalt.Infrastructure.Entities;
+using Sevriukoff.Gwalt.Infrastructure.External;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 using Sevriukoff.Gwalt.Infrastructure.Repositories;
 using Sevriukoff.Gwalt.WebApi.Common;
 using Sevriukoff.Gwalt.WebApi.Common.Attributes;
 using Sevriukoff.Gwalt.WebApi.Mapping;
 using Sevriukoff.Gwalt.WebApi.Middleware;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +46,6 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
     containerBuilder.RegisterType<AlbumLikeHandler>().As<ILikeHandler>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<CommentLikeHandler>().As<ILikeHandler>().InstancePerLifetimeScope();
     
-    containerBuilder.RegisterType<ListenCacheService>().As<IListenCacheService>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<ListenRepository>().As<IListenRepository>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<ListenService>().As<IListenService>().InstancePerLifetimeScope();
     containerBuilder.RegisterType<TrackListenHandler>().As<IListenHandler>().InstancePerLifetimeScope();
@@ -62,6 +66,29 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
     containerBuilder.RegisterType<SessionService>().As<ISessionService>().InstancePerLifetimeScope();
 
     containerBuilder.RegisterType<FileService>().As<IFileService>().InstancePerLifetimeScope();
+    
+    containerBuilder.RegisterType<RedisCacheUpdater>().As<ICacheUpdater>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<BaseCacheApplier<Track>>().As<ICacheApplier<Track>>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<BaseCacheApplier<Album>>().As<ICacheApplier<Album>>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<UserCacheApplier>().As<ICacheApplier<User>>().InstancePerLifetimeScope();
+
+    containerBuilder.RegisterType<TrackRepository>().As<IRepository<Track>>();
+    containerBuilder.RegisterType<AlbumRepository>().As<IRepository<Album>>();
+    containerBuilder.RegisterType<UserRepository>().As<IRepository<User>>();
+    
+    containerBuilder.RegisterDecorator<BaseRepositoryWithCache<Track>, IRepository<Track>>();
+    containerBuilder.RegisterDecorator<BaseRepositoryWithCache<Album>, IRepository<Album>>();
+    containerBuilder.RegisterDecorator<BaseRepositoryWithCache<User>, IRepository<User>>();
+    containerBuilder.RegisterDecorator<TrackRepositoryWithCache, ITrackRepository>();
+    containerBuilder.RegisterDecorator<AlbumRepositoryWithCache, IAlbumRepository>();
+    containerBuilder.RegisterDecorator<UserRepositoryWithCache, IUserRepository>();
+    
+    containerBuilder.RegisterType<ListenCacheClient>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<FollowerCacheClient>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<LikeCacheClient>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<AudioProcessor>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<DateTimeHelper>().InstancePerLifetimeScope();
+    containerBuilder.RegisterType<ImageProcessor>().InstancePerLifetimeScope();
 
     containerBuilder.Register<IAmazonS3>(context =>
     {
