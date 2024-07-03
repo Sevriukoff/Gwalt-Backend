@@ -18,7 +18,7 @@ public class GenreService : IGenreService
     
     public async Task<IEnumerable<GenreModel>> GetAllAsync()
     {
-        var entities = await _genreRepository.GetAllAsync();
+        var entities = await _genreRepository.GetAllAsync(pageSize: 1000);
         
         return _mapper.Map<IEnumerable<GenreModel>>(entities);
     }

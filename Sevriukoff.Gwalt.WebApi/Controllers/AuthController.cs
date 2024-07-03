@@ -53,12 +53,12 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var (accessToken, refreshToken) = await _authService.LoginAsync(user.Email, user.Password);
+            var (userId,accessToken, refreshToken) = await _authService.LoginAsync(user.Email, user.Password);
             
             Response.SetCookie(_cookieConfig.AccessToken, accessToken, TimeSpan.FromDays(1));
             Response.SetCookie(_cookieConfig.RefreshToken, refreshToken, TimeSpan.FromDays(1));
             
-            return Ok( new {accessToken, refreshToken});
+            return Ok( new {userId, accessToken, refreshToken});
         }
         catch (AuthException e)
         {

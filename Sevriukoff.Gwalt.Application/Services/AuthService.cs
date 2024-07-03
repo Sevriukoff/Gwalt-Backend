@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
-using Sevriukoff.Gwalt.Application.Exceptions;
+﻿using Sevriukoff.Gwalt.Application.Exceptions;
 using Sevriukoff.Gwalt.Application.Helpers;
 using Sevriukoff.Gwalt.Application.Interfaces;
-using Sevriukoff.Gwalt.Infrastructure.Extensions;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
 namespace Sevriukoff.Gwalt.Application.Services;
@@ -32,7 +29,7 @@ public class AuthService : IAuthService
         return user != null;
     }
 
-    public async Task<(string accessToken, string refreshToken)> LoginAsync(string email, string password)
+    public async Task<(int userId, string accessToken, string refreshToken)> LoginAsync(string email, string password)
     {
         var userEntity = await _userRepository.GetByEmailAsync(email);
         
@@ -45,7 +42,7 @@ public class AuthService : IAuthService
         
         await _sessionService.AddTokenAsync(userEntity.Id, refreshToken);
         
-        return (accessToken, refreshToken);
+        return (userEntity.Id, accessToken, refreshToken);
     }
 
     public async Task<(string newAccessToken, string newRefreshToken)> RefreshTokenAsync(string refreshToken)
