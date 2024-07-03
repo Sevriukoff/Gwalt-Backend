@@ -34,7 +34,7 @@ public class TracksController : ControllerBase
         
         var track = await _trackService.GetByIdAsync(id, includes);
         
-        var trackViewModel = _mapper.Map<TrackViewModel>(track);
+        var trackViewModel = _mapper.Map<TrackFloatViewModel>(track);
         
         return Ok(trackViewModel);
     }
@@ -44,7 +44,7 @@ public class TracksController : ControllerBase
     {
         var trackModel = _mapper.Map<TrackModel>(trackViewModel);
         var id = await _trackService.AddAsync(trackModel);
-        
-        return CreatedAtAction(nameof(GetById), new {id = id}, id);
+
+        return Ok(id);
     }
 }

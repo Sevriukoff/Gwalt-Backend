@@ -2,6 +2,7 @@
 using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.Application.Specification;
+using Sevriukoff.Gwalt.Application.Specification.Album;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
@@ -18,13 +19,16 @@ public class AlbumService : IAlbumService
         _mapper = mapper;
     }
     
-    public async Task<IEnumerable<AlbumModel>> GetAllAsync(string[]? includes, string? orderBy)
+    public async Task<IEnumerable<AlbumModel>> GetAllAsync(string[]? includes, string? orderBy, string[]? genres, int pageNumber, int pageSize)
     {
         var includeSpec = new IncludingSpecification<Album>(includes);
         var orderSpec = new SortingSpecification<Album>(orderBy);
-        var compositeSpec = includeSpec.And(orderSpec);
+        var genreSpec = new AlbumsByGenresSpecification(genres);
+        var compositeSpec = includeSpec
+            .And(orderSpec)
+            .And(genreSpec);
         
-        var albums = await _albumRepository.GetAllAsync(compositeSpec);
+        var albums = await _albumRepository.GetAllAsync(pageNumber, pageSize, compositeSpec);
         var albumModels = _mapper.Map<IEnumerable<AlbumModel>>(albums);
         
         return albumModels;
@@ -32,7 +36,7 @@ public class AlbumService : IAlbumService
 
     public async Task<AlbumModel> GetByIdAsync(int id, string[]? includes)
     {
-        var includeSpec = new IncludingSpecification<Album>(includes);
+        var includeSpec = new IncludingSpecification<Album>("Genre");
         var album = await _albumRepository.GetByIdAsync(id, includeSpec);
         var albumModel = _mapper.Map<AlbumModel>(album);
         
