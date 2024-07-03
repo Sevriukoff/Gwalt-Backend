@@ -140,6 +140,17 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         
         return await Context.SaveChangesAsync() > 0;
     }
+
+    public async Task IncrementListensAsync(int userId, int increment)
+    {
+        await IncrementFieldAsync("ListensCount", userId, increment);
+    }
+
+    public async Task IncrementLikesAsync(int userId, int increment)
+    {
+        await IncrementFieldAsync("LikesCount", userId, increment);
+    }
+    
     public async Task IncrementFollowersAsync(int userId, int increment)
     {
         await IncrementFieldAsync("FollowersCount", userId, increment);

@@ -50,5 +50,22 @@ public class AlbumRepository : BaseRepository<Album>, IAlbumRepository
             .ToListAsync();
     }
 
+    public async Task<int[]> GetAuthorsIds(int albumId)
+    {
+        return await Context.Albums
+            .Where(a => a.Id == albumId)
+            .SelectMany(a => a.Authors)
+            .Select(u => u.Id)
+            .ToArrayAsync();
+    }
+
+    public async Task IncrementListensAsync(int userId, int increment)
+    {
+        await IncrementFieldAsync("ListensCount", userId, increment);
+    }
+
+    public async Task IncrementLikesAsync(int userId, int increment)
+    {
+        await IncrementFieldAsync("LikesCount", userId, increment);
     }
 }

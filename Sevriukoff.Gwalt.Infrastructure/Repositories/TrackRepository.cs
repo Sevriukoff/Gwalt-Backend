@@ -50,4 +50,52 @@ public class TrackRepository : BaseRepository<Track>, ITrackRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Track>> GetAllByAlbumIdAsync(int albumId, int pageNumber, int pageSize, ISpecification<Track>? spec = null)
+    {
+        var query = Context.Tracks
+            .Where(x => x.AlbumId == albumId)
+            .Include(x => x.Album)
+                .ThenInclude(x => x.Authors)
+            .Include(x => x.Genres)
+            .AsQueryable();
+        
+        var tracks = await GetFilteredAsync(query, pageNumber, pageSize, spec);
+
+        return tracks;
+    }
+
+    public async Task<IEnumerable<Track>> GetAllByUserIdAsync(int userId, int pageNumber, int pageSize, ISpecification<Track>? spec = null)
+    {
+        var tracks = await GetFilteredAsync(x => x.Album.Authors.Any(x => x.Id == userId), pageNumber, pageSize, spec);
+
+        return tracks;
+    }
+
+    public async Task<(int, int[])> GetAuthorsIdsByTrackIdAsync(int trackId)
+    {
+        var result = await Context.Tracks
+            .Where(t => t.Id == trackId && t.AlbumId != null)
+            .Select(t => new 
+            {
+                AlbumId = t.AlbumId,
+                AuthorIds = Context.Users
+                    .Where(a => a.Albums.Any(al => al.Id == t.AlbumId))
+                    .Select(a => a.Id)
+                    .Distinct()
+                    .ToArray()
+            })
+            .FirstOrDefaultAsync();
+
+        return (result.AlbumId, result.AuthorIds);
+    }
+    
+    public async Task IncrementListensAsync(int trackId, int increment)
+    {
+        await IncrementFieldAsync("ListensCount", trackId, increment);
+    }
+
+    public async Task IncrementLikesAsync(int trackId, int increment)
+    {
+        await IncrementFieldAsync("LikesCount", trackId, increment);
+    }
 }
