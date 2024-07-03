@@ -6,6 +6,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Npgsql;
 using Sevriukoff.Gwalt.Application.Handlers;
 using Sevriukoff.Gwalt.Application.Helpers;
@@ -98,7 +99,7 @@ var r = builder.Host.ConfigureContainer<ContainerBuilder>((context, containerBui
         };
         
         return new AmazonS3Client(config);
-    }).InstancePerLifetimeScope(); 
+    }).InstancePerLifetimeScope();
 
     containerBuilder.RegisterType<YandexStorage>().As<IFileStorage>().InstancePerLifetimeScope();
 });
@@ -203,6 +204,11 @@ builder.Services.AddControllers(opt =>
     {
         opt.ValueProviderFactories.Add(new JwtValueProviderFactory(provider.GetRequiredService<JwtHelper>()));
         opt.ValueProviderFactories.Add(new CookieValueProviderFactory());
+    })
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
     })
     .AddJsonOptions(opt =>
     {

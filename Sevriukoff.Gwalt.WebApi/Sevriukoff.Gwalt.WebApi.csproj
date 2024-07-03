@@ -23,4 +23,8 @@
       <ProjectReference Include="..\Sevriukoff.Gwalt.Application\Sevriukoff.Gwalt.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Controllers\AvatarController.cs" />
+    </ItemGroup>
+
 </Project>
