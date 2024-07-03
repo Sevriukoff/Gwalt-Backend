@@ -20,24 +20,20 @@ public class LikesController : ControllerBase
     }
     
     [HttpGet("{likeableType}/{likeableId:int}")]
-    public async Task<IActionResult> Get([FromJwtClaims("sub")] int userId, string likeableType, int likeableId)
+    public async Task<IActionResult> Get([FromJwtClaims("sub")] int userId, LikeableType likeableType, int likeableId)
     {
-        var like = await _likeService.GetAsync(LikeableType.Track, likeableId, userId);
+        var like = await _likeService.GetAsync(likeableType, likeableId, userId);
         
         if (like == null)
             return NotFound();
         
         return Ok(like);
     }
-
-    /// <summary>
-    /// POST /api/v1/like/
-    /// </summary>
-    /// <returns></returns>
-    [HttpPost()]
+    
+    [HttpPost]
     public async Task<IActionResult> Post([FromJwtClaims("sub")] int userId, [FromBody] LikeCreateViewModel model)
     {
-        var id = await _likeService.AddAsync(model.LikeableType,model.LikeableId, userId);
+        var id = await _likeService.AddAsync(model.LikeableType, model.LikeableId, userId);
         
         return CreatedAtAction(nameof(Get), new {likeableType = model.LikeableType.ToString(), likeableId = id}, new {id = id});
     }
@@ -46,14 +42,6 @@ public class LikesController : ControllerBase
     public async Task<IActionResult> Delete(int likeId)
     {
         await _likeService.DeleteAsync(likeId);
-        
-        return Ok();
-    }
-    
-    [HttpGet()]
-    public async Task<IActionResult> GetAll([FromJwtClaims("sub")] int userId)
-    {
-        //var likes = await _likeService.GetAllAsync(userId);
         
         return Ok();
     }
