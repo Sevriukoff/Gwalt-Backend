@@ -11,7 +11,11 @@ public class ApplicationMappingProfile : Profile
     {
         #region Mappings Model <=> Entity
         
-        CreateMap<User, UserModel>();
+        CreateMap<User, UserModel>()
+            .ReverseMap();
+        
+        CreateMap<UserModel, User>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             
         CreateMap<Like, LikeModel>()
                 .ForMember(dest => dest.Likeable, opt => 
@@ -36,11 +40,15 @@ public class ApplicationMappingProfile : Profile
             
         CreateMap<Album, AlbumModel>()
             .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom(src => src.ImageUrl))
+            .ForMember(dest => dest.ListensCount, opt => opt.MapFrom(src => src.ListensCount))
+            .ReverseMap();
+
+        CreateMap<Genre, GenreModel>()
             .ReverseMap();
 
         CreateMap<Track, TrackModel>()
-            .ForMember(dest => dest.LikesCount, opt => opt.MapFrom(src => src.TotalLikes != null ? src.TotalLikes.Count : 0))
-            .ForMember(dest => dest.Album, opt => opt.MapFrom(src => src.Album != null ? src.Album : new Album { Id = src.AlbumId }));
+            .ForMember(dest => dest.Album, opt => opt.MapFrom(src => src.Album != null ? src.Album : new Album { Id = src.AlbumId }))
+            .ForMember(dest => dest.Peaks, opt => opt.MapFrom(src => src.Peaks.Peaks));
 
         CreateMap<TrackModel, Track>()
             .ForMember(dest => dest.AlbumId, opt => opt.MapFrom(src => src.Album.Id))

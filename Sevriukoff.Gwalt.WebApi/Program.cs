@@ -212,6 +212,7 @@ app.UseCors("AllowLocalhost3000");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDelayMiddleware(1500);
 app.UsePublicSessionMiddleware();
 
 app.MapControllers();

@@ -10,7 +10,10 @@ public class AlbumModel : ILikeable, IListenable, IShareable
     public bool IsSingle { get; set; }
     public bool IsExplicit { get; set; }
     public DateTime ReleaseDate { get; set; }
-    
+    public GenreModel Genre { get; set; }
+
+    public int TracksCount { get; set; }
+    public TimeSpan Duration { get; set; }
     public int LikesCount { get; set; }
     public int ListensCount { get; set; }
     public int SharesCount { get; set; }
