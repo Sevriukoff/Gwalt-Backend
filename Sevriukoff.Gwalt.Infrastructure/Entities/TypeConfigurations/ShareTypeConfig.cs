@@ -8,7 +8,7 @@ public class ShareTypeConfig : IEntityTypeConfiguration<Share>
     public void Configure(EntityTypeBuilder<Share> builder)
     {
         builder.HasOne(x => x.Track)
-            .WithMany(x => x.TotalShares)
+            .WithMany(x => x.Shares)
             .HasForeignKey(x => x.TrackId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);

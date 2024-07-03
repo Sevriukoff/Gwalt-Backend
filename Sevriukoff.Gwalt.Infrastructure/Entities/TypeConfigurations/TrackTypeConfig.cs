@@ -13,6 +13,13 @@ public class TrackTypeConfig : IEntityTypeConfiguration<Track>
             .HasMaxLength(100)
             .IsRequired();
 
+        builder.Property(x => x.TsvectorTitle)
+            .HasComputedColumnSql("to_tsvector('russian', \"Title\")", true);
+        
+        builder.HasIndex(x => x.TsvectorTitle)
+            .HasMethod("GIN")
+            .HasOperators("gin_trgm_ops");
+        
         builder.Property(x => x.AudioUrl)
             .HasMaxLength(DataDbContext.UrlMaxLength)
             .IsRequired();

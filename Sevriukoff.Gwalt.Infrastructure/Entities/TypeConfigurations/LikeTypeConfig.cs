@@ -8,7 +8,7 @@ public class LikeTypeConfig : IEntityTypeConfiguration<Like>
     public void Configure(EntityTypeBuilder<Like> builder)
     {
         builder.HasOne(x => x.Track)
-            .WithMany(x => x.TotalLikes)
+            .WithMany(x => x.Likes)
             .HasForeignKey(x => x.TrackId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
@@ -32,7 +32,7 @@ public class LikeTypeConfig : IEntityTypeConfiguration<Like>
         //     .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.User)
-            .WithMany(x => x.TotalLikes)
+            .WithMany(x => x.Likes)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }

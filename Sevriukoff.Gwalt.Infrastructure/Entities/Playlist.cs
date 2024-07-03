@@ -5,6 +5,7 @@ namespace Sevriukoff.Gwalt.Infrastructure.Entities;
 public class Playlist : BaseEntity
 {
     public string Title { get; set; }
+    public string TsvectorTitle { get; set; }
     public string ImageUrl { get; set; }
     public string Description { get; set; }
     public TimeSpan Duration { get; set; }

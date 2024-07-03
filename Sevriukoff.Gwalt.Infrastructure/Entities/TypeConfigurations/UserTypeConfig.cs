@@ -9,11 +9,19 @@ public class UserTypeConfig : IEntityTypeConfiguration<User>
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id)
+            .ValueGeneratedOnAdd();
         
         builder.Property(x => x.Name)
             .HasMaxLength(50)
             .IsRequired();
+        
+        builder.Property(x => x.TsvectorName)
+            .HasComputedColumnSql("to_tsvector('russian', \"Name\")", true);
+
+        builder.HasIndex(x => x.TsvectorName)
+            .HasMethod("GIN")
+            .HasOperators("gin_trgm_ops");
         
         builder.Property(x => x.Email)
             .HasMaxLength(100)

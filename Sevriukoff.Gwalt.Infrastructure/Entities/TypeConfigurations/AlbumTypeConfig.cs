@@ -9,12 +9,19 @@ public class AlbumTypeConfig : IEntityTypeConfiguration<Album>
     {
         builder.HasKey(x => x.Id);
         
-        builder.Property(x => x.ImageUrl)
-            .HasMaxLength(DataDbContext.UrlMaxLength)
-            .IsRequired();
-        
         builder.Property(x => x.Title)
             .HasMaxLength(255)
+            .IsRequired();
+        
+        builder.Property(x => x.TsvectorTitle)
+            .HasComputedColumnSql("to_tsvector('russian', \"Title\")", true);
+        
+        builder.HasIndex(x => x.TsvectorTitle)
+            .HasMethod("GIN")
+            .HasOperators("gin_trgm_ops");
+        
+        builder.Property(x => x.ImageUrl)
+            .HasMaxLength(DataDbContext.UrlMaxLength)
             .IsRequired();
         
         builder.Property(x => x.IsSingle)

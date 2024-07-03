@@ -38,7 +38,7 @@ public class ListenTypeConfig : IEntityTypeConfiguration<Listen>
             .IsRequired(true);
         
         builder.HasOne(x => x.Track)
-            .WithMany(x => x.TotalListens)
+            .WithMany(x => x.Listens)
             .HasForeignKey(x => x.TrackId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
@@ -50,7 +50,7 @@ public class ListenTypeConfig : IEntityTypeConfiguration<Listen>
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x => x.User)
-            .WithMany(x => x.TotalListens)
+            .WithMany(x => x.Listens)
             .HasForeignKey(x => x.UserId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
