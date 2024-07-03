@@ -6,6 +6,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using Sevriukoff.Gwalt.Application.Handlers;
 using Sevriukoff.Gwalt.Application.Helpers;
 using Sevriukoff.Gwalt.Application.Interfaces;
@@ -129,9 +130,14 @@ builder.Services.AddAuthorization(opt =>
 
 #region DbContext
 
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("Postgres"));
+dataSourceBuilder.MapEnum<Gender>();
+var dataSource = dataSourceBuilder.Build();
+
 builder.Services.AddDbContext<DataDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres"));
+    options.UseNpgsql(dataSource);
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
 #endregion
