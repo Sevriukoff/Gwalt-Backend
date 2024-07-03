@@ -17,4 +17,14 @@ public class FileService : IFileService
     {
         return await _fileStorage.UploadAsync(image, new FileContentType(contentType));
     }
+
+    public async Task<Stream> DownloadAsync(string objectName)
+    {
+        return await _fileStorage.DownloadAsync(objectName);
+    }
+
+    public async Task<bool> DeleteAsync(string objectName)
+    {
+        return await _fileStorage.DeleteAsync(objectName);
+    }
 }
