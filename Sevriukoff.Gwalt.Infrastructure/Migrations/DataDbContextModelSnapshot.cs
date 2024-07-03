@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Sevriukoff.Gwalt.Infrastructure;
+using Sevriukoff.Gwalt.Infrastructure.Entities;
 
 #nullable disable
 
@@ -20,6 +21,7 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "7.0.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "gender", new[] { "unknown", "male", "female" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("AlbumUser", b =>
@@ -60,6 +62,12 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("interval");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(650)
@@ -68,16 +76,16 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                     b.Property<bool>("IsSingle")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LikeCount")
+                    b.Property<int>("LikesCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PlayCount")
+                    b.Property<int>("ListensCount")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ShareCount")
+                    b.Property<int>("SharesCount")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -85,7 +93,23 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<int>("TracksCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TsvectorTitle")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("to_tsvector('russian', \"Title\")", true);
+
                     b.HasKey("Id");
+
+                    b.HasIndex("GenreId");
+
+                    b.HasIndex("TsvectorTitle");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("TsvectorTitle"), "GIN");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("TsvectorTitle"), new[] { "gin_trgm_ops" });
 
                     b.ToTable("Albums");
                 });
@@ -267,6 +291,12 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<string>("TsvectorTitle")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("to_tsvector('russian', \"Title\")", true);
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -274,6 +304,11 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TsvectorTitle");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("TsvectorTitle"), "GIN");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("TsvectorTitle"), new[] { "gin_trgm_ops" });
 
                     b.HasIndex("UserId");
 
@@ -360,13 +395,13 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                     b.Property<bool>("IsExplicit")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LikeCount")
+                    b.Property<int>("LikesCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PlayCount")
+                    b.Property<int>("ListensCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ShareCount")
+                    b.Property<int>("SharesCount")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -374,11 +409,36 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("TsvectorTitle")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("to_tsvector('russian', \"Title\")", true);
+
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
 
+                    b.HasIndex("TsvectorTitle");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("TsvectorTitle"), "GIN");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("TsvectorTitle"), new[] { "gin_trgm_ops" });
+
                     b.ToTable("Tracks");
+                });
+
+            modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.TrackPeaks", b =>
+                {
+                    b.Property<int>("TrackId")
+                        .HasColumnType("integer");
+
+                    b.Property<float[]>("Peaks")
+                        .IsRequired()
+                        .HasColumnType("real[]");
+
+                    b.HasKey("TrackId");
+
+                    b.ToTable("TrackPeaks");
                 });
 
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.User", b =>
@@ -388,6 +448,9 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Age")
+                        .HasColumnType("integer");
 
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
@@ -408,6 +471,21 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int>("FollowersCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FollowingCount")
+                        .HasColumnType("integer");
+
+                    b.Property<Gender>("Gender")
+                        .HasColumnType("gender");
+
+                    b.Property<int>("LikesCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ListensCount")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -425,13 +503,45 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("SharesCount")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ShortDescription")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<string>("TsvectorName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("to_tsvector('russian', \"Name\")", true);
+
                     b.HasKey("Id");
 
+                    b.HasIndex("TsvectorName");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("TsvectorName"), "GIN");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("TsvectorName"), new[] { "gin_trgm_ops" });
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.UserFollower", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FollowerId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId", "FollowerId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.ToTable("UserFollowers");
                 });
 
             modelBuilder.Entity("AlbumUser", b =>
@@ -462,6 +572,17 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Album", b =>
+                {
+                    b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Genre", "Genre")
+                        .WithMany()
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Comment", b =>
@@ -496,12 +617,12 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Track", "Track")
-                        .WithMany("TotalLikes")
+                        .WithMany("Likes")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "User")
-                        .WithMany("TotalLikes")
+                        .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -529,12 +650,12 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Track", "Track")
-                        .WithMany("TotalListens")
+                        .WithMany("Listens")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "User")
-                        .WithMany("TotalListens")
+                        .WithMany("Listens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -588,7 +709,7 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Track", "Track")
-                        .WithMany("TotalShares")
+                        .WithMany("Shares")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -616,6 +737,36 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
                     b.Navigation("Album");
                 });
 
+            modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.TrackPeaks", b =>
+                {
+                    b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.Track", "Track")
+                        .WithOne("Peaks")
+                        .HasForeignKey("Sevriukoff.Gwalt.Infrastructure.Entities.TrackPeaks", "TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Track");
+                });
+
+            modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.UserFollower", b =>
+                {
+                    b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "Follower")
+                        .WithMany("Followings")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Sevriukoff.Gwalt.Infrastructure.Entities.User", "User")
+                        .WithMany("Followers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Follower");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Album", b =>
                 {
                     b.Navigation("Likes");
@@ -636,18 +787,25 @@ namespace Sevriukoff.Gwalt.Infrastructure.Migrations
 
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.Track", b =>
                 {
-                    b.Navigation("TotalLikes");
+                    b.Navigation("Likes");
 
-                    b.Navigation("TotalListens");
+                    b.Navigation("Listens");
 
-                    b.Navigation("TotalShares");
+                    b.Navigation("Peaks")
+                        .IsRequired();
+
+                    b.Navigation("Shares");
                 });
 
             modelBuilder.Entity("Sevriukoff.Gwalt.Infrastructure.Entities.User", b =>
                 {
-                    b.Navigation("TotalLikes");
+                    b.Navigation("Followers");
 
-                    b.Navigation("TotalListens");
+                    b.Navigation("Followings");
+
+                    b.Navigation("Likes");
+
+                    b.Navigation("Listens");
                 });
 #pragma warning restore 612, 618
         }

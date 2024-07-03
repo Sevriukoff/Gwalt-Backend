@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Sevriukoff.Gwalt.Infrastructure.Base;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
 using Sevriukoff.Gwalt.Infrastructure.Entities.TypeConfigurations;
@@ -15,6 +16,7 @@ public class DataDbContext : DbContext
     public DbSet<Album> Albums { get; set; }
     public DbSet<Playlist> Playlists { get; set; }
     public DbSet<Track> Tracks { get; set; }
+    public DbSet<TrackPeaks> TrackPeaks { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Comment> Comments { get; set; }
 
@@ -26,10 +28,13 @@ public class DataDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.HasPostgresEnum<Gender>("public");
+
         modelBuilder.ApplyConfiguration(new UserTypeConfig());
         modelBuilder.ApplyConfiguration(new AlbumTypeConfig());
         modelBuilder.ApplyConfiguration(new PlaylistTypeConfig());
         modelBuilder.ApplyConfiguration(new TrackTypeConfig());
+        modelBuilder.ApplyConfiguration(new TrackPeaksTypeConfig());
         modelBuilder.ApplyConfiguration(new GenreTypeConfig());
         modelBuilder.ApplyConfiguration(new CommentTypeConfig());
         modelBuilder.ApplyConfiguration(new LikeTypeConfig());

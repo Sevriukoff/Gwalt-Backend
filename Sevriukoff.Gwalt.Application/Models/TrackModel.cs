@@ -10,6 +10,7 @@ public class TrackModel : ILikeable, IListenable, IShareable
     public bool IsExplicit { get; set; }
     public string AudioUrl { get; set; }
     public GenreModel[] Genres { get; set; }
+    public float[] Peaks { get; set; }
     public AlbumModel Album { get; set; }
     
     public int LikesCount { get; set; }

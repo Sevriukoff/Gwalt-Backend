@@ -8,4 +8,9 @@ public abstract class BaseModel
     {
         Id = id;
     }
+
+    public BaseModel()
+    {
+        
+    }
 }

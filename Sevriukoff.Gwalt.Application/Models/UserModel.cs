@@ -13,7 +13,25 @@ public class UserModel : BaseModel
     public string BackgroundUrl { get; set; }
     public string ShortDescription { get; set; }
     public string Description { get; set; }
+    public Gender Gender { get; set; }
+    public int Age { get; set; }
     public bool IsArtist { get; set; }
+    
+    public int LikeCount { get; set; }
+    public int ShareCount { get; set; }
+    public int ListenCount { get; set; }
+    public int FollowersCount { get; set; }
+    public int FollowingCount { get; set; }
+    
+    /// <summary>
+    /// Список пользователей, которые отслеживают данного пользователя.
+    /// </summary>
+    public List<UserModel> Followers { get; set; }
+    
+    /// <summary>
+    /// Список пользователей, которых отслеживает данный пользователь.
+    /// </summary>
+    public List<UserModel> Followings { get; set; }
     
     /// <summary>
     /// Лайки, поставленные пользователем другим пользователем под их треки, альбомы, комметарии или под профилем.
@@ -42,6 +60,7 @@ public class UserModel : BaseModel
     public List<CommentModel> Comments { get; set; }
     
     public UserModel(int id) : base(id) { }
+    public UserModel() { }
 }
 
 public abstract class MetricModel
@@ -71,6 +90,8 @@ public class ListenModel : MetricModel
 
 public class ListenMetadata
 {
+    public int Quality { get; set; }
+    
     public TimeSpan TotalDuration { get; set; }
     public TimeSpan EndTime  { get; set; }
     public TimeSpan ActiveListeningTime { get; set; }

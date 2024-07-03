@@ -3,19 +3,12 @@ using Amazon.S3.Model;
 using Microsoft.Extensions.Options;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
-namespace Sevriukoff.Gwalt.Infrastructure;
-
-public class YandexStorageConfig
-{
-    public required string ServiceUrl { init; get; }
-    public required string BucketName { init; get; }
-    public required string BaseDirectory { init; get; }
-}
+namespace Sevriukoff.Gwalt.Infrastructure.External;
 
 public class YandexStorage : IFileStorage
 {
     private readonly IAmazonS3 _storageClient;
-    private YandexStorageConfig _config;
+    private readonly YandexStorageConfig _config;
     
     public YandexStorage(IAmazonS3 storageClient, IOptions<YandexStorageConfig> config)
     {
@@ -45,6 +38,44 @@ public class YandexStorage : IFileStorage
         
         return string.Empty;
     }
+
+    public async Task<Stream> DownloadAsync(string objectName)
+    {
+        var request = new GetObjectRequest
+        {
+            BucketName = _config.BucketName,
+            Key = objectName.Replace(_config.BaseDirectory, ""),
+        };
+    
+        var response = await _storageClient.GetObjectAsync(request);
+        
+        var memoryStream = new MemoryStream();
+        await response.ResponseStream.CopyToAsync(memoryStream);
+        memoryStream.Position = 0;
+        
+        return memoryStream;
+    }
+
+    public async Task<bool> DeleteAsync(string objectName)
+    {
+        try
+        {
+            var deleteObjectRequest = new DeleteObjectRequest
+            {
+                BucketName = _config.BucketName,
+                Key = objectName,
+            };
+            
+            await _storageClient.DeleteObjectAsync(deleteObjectRequest);
+
+            return true;
+        }
+        catch (AmazonS3Exception ex)
+        {
+            return false;
+        }
+    }
+
 
     private string GenerateFileName(FileContentType type)
     {

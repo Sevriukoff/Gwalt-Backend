@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Sevriukoff.Gwalt.Application.Helpers;
 using Sevriukoff.Gwalt.Application.Interfaces;
 using Sevriukoff.Gwalt.Application.Models;
 using Sevriukoff.Gwalt.Application.Specification;
 using Sevriukoff.Gwalt.Infrastructure.Entities;
+using Sevriukoff.Gwalt.Infrastructure.External;
 using Sevriukoff.Gwalt.Infrastructure.Interfaces;
 
 namespace Sevriukoff.Gwalt.Application.Services;
@@ -11,22 +11,37 @@ namespace Sevriukoff.Gwalt.Application.Services;
 public class TrackService : ITrackService
 {
     private readonly ITrackRepository _trackRepository;
+    private readonly IFileStorage _fileStorage;
     private readonly IMapper _mapper;
-    private readonly IAlbumRepository _albumRepository;
-    private readonly IListenCacheService _listenCacheService;
+    private readonly AudioProcessor _audioProcessor;
 
-    public TrackService(ITrackRepository trackRepository, IMapper mapper, IAlbumRepository albumRepository,
-        IListenCacheService listenCacheService)
+    public TrackService(ITrackRepository trackRepository, IMapper mapper, IFileStorage fileStorage, AudioProcessor audioProcessor)
     {
         _trackRepository = trackRepository;
         _mapper = mapper;
-        _albumRepository = albumRepository;
-        _listenCacheService = listenCacheService;
+        _fileStorage = fileStorage;
+        _audioProcessor = audioProcessor;
     }
     
     public async Task<IEnumerable<Track>> GetAllAsync()
     {
         return await _trackRepository.GetAllAsync();
+    }
+    
+    public async Task<IEnumerable<TrackModel>> GetByUserIdAsync(int userId, string[]? includes, int pageNumber, int pageSize)
+    {
+        var includeSpec = new IncludingSpecification<Track>(includes);
+        var tracksEntity = await _trackRepository.GetAllByUserIdAsync(userId, pageNumber, pageSize, includeSpec);
+
+        return _mapper.Map<IEnumerable<TrackModel>>(tracksEntity);
+    }
+
+    public async Task<IEnumerable<TrackModel>> GetAllByAlbumIdAsync(int albumId, string[]? includes = null, int pageNumber = 1, int pageSize = 10)
+    {
+        var includeSpec = new IncludingSpecification<Track>(includes);
+        var tracksEntity = await _trackRepository.GetAllByAlbumIdAsync(albumId, pageNumber, pageSize, includeSpec);
+
+        return _mapper.Map<IEnumerable<TrackModel>>(tracksEntity);
     }
 
     public async Task<TrackModel?> GetByIdAsync(int id, string[]? includes = null)
@@ -39,38 +54,14 @@ public class TrackService : ITrackService
     
     public async Task<int> AddAsync(TrackModel track)
     {
+        await using var trackAudio = await _fileStorage.DownloadAsync(track.AudioUrl);
+        
+        var trackPeaks = _audioProcessor.GetAudioPeaks(trackAudio);
         var trackEntity = _mapper.Map<Track>(track);
+        trackEntity.Peaks = new TrackPeaks{ TrackId = track.Id, Peaks = trackPeaks };
+        
         var trackId = await _trackRepository.AddAsync(trackEntity);
         
         return trackId;
-    }
-    
-    public async Task UpdateDatabaseFromCacheAsync()
-    {
-        var trackPlayCounts = await _listenCacheService.GetTrackPlayCountsAsync();
-        var albumPlayCounts = await _listenCacheService.GetAlbumPlayCountsAsync();
-
-        foreach (var trackPlayCount in trackPlayCounts)
-        {
-            var track = await _trackRepository.GetByIdAsync(trackPlayCount.Key);
-            if (track != null)
-            {
-                track.PlayCount += trackPlayCount.Value;
-                await _trackRepository.UpdateAsync(track);
-            }
-        }
-
-        foreach (var albumPlayCount in albumPlayCounts)
-        {
-            var album = await _albumRepository.GetByIdAsync(albumPlayCount.Key);
-            if (album != null)
-            {
-                album.PlayCount += albumPlayCount.Value;
-                await _albumRepository.UpdateAsync(album);
-            }
-        }
-
-        await _listenCacheService.ClearTrackPlayCountsAsync();
-        await _listenCacheService.ClearAlbumPlayCountsAsync();
     }
 }

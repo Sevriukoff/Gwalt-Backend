@@ -8,4 +8,8 @@ public class AlbumCreateViewModel
     public bool IsSingle { get; set; }
     public string Description { get; set; }
     public DateTime ReleaseDate { get; set; }
+    public int GenreId { get; set; }
+    public int[] AuthorsIds { get; set; }
+    public int Duration { get; set; }
+    public int TracksCount { get; set; }
 }
